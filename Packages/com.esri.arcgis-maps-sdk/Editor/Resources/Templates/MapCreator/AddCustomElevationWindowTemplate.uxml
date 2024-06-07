@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="UnityEngine.UIElements"
+	xmlns:editor="UnityEditor.UIElements"
+	xmlns:esri="Esri.ArcGISMapsSDK.Editor.UI"
+	xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+	xsi:schemaLocation="
+						UnityEngine.UIElements ../../../../../../UIElementsSchema/UnityEngine.UIElements.xsd
+						UnityEditor.UIElements ../../../../../../UIElementsSchema/UnityEditor.UIElements.xsd
+						UnityEditor.PackageManager.UI ../../../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd"
+>
+
+<VisualElement class="add-custom-elevation-window">
+
+	<editor:PropertyField binding-path="ElevationItem.Source" />
+	<editor:PropertyField binding-path="ElevationItem.Name" />
+	<editor:PropertyField binding-path="ElevationItem.Authentication" />
+
+	<VisualElement class="buttons">
+
+		<Button name="add-button" text="Add" />
+		<Button name="cancel-button" text="Cancel" />
+
+	</VisualElement>
+
+</VisualElement>
+
+</UXML>

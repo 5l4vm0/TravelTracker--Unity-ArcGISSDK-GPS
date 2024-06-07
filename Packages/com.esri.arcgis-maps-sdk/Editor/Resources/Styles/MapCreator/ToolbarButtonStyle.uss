@@ -1,0 +1,38 @@
+Button {
+	align-items: center;
+	background-color: transparent;
+	border-width: 0px;
+	height: 44px;
+	margin: 8px 5px 8px 5px;
+	opacity: 0.7;
+	padding: 0;
+	width: 44px;
+}
+
+Button:enabled:hover {
+	background-color: var(--unity-colors-button-background-hover);
+}
+
+Button:disabled {
+	opacity: 0.4;
+}
+
+Button.button-selected {
+	background-color: var(--unity-colors-button-background-hover);
+	opacity: 1;
+}
+
+Button Image {
+	align-self: center;
+	height: 22px;
+	margin-top: 6px;
+	width: 22px;
+}
+
+Button Label {
+	-unity-text-align: lower-center;
+	font-size: 9px;
+	height: 11px;
+	margin-top: 2px;
+	padding: 0;
+}

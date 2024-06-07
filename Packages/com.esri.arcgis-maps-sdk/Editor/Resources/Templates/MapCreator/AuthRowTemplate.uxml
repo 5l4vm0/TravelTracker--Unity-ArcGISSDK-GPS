@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+	xsi:schemaLocation="
+                        UnityEngine.UIElements ../../../../../../UIElementsSchema/UnityEngine.UIElements.xsd
+                        UnityEditor.UIElements ../../../../../../UIElementsSchema/UnityEditor.UIElements.xsd
+                        UnityEditor.PackageManager.UI ../../../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd"
+>
+
+<VisualElement class="layer-name-holder">
+
+	<Label class="layer-name-label" text="Config Name"/>
+    <TextField class="layer-name-text"/>
+    <Button class="kebab-button" name="config-options-button" text="..."/>
+
+</VisualElement>
+
+<Foldout class="foldout-layer-row">
+
+	<TextField class="config-text" name="config-name-text" label="Name"/>
+	<TextField class="config-text" name="config-client-text" label="Client ID"/>
+	<TextField class="config-text" name="config-uri-text" label="Redirect URI"/>
+
+</Foldout>
+
+</UXML>

@@ -1,0 +1,78 @@
+.elevation-tool {
+	flex-grow: 1;
+	padding: 0;
+}
+
+.elevation-tool .mesh-modifications {
+	flex-direction: row;
+	margin-bottom: 4px;
+	padding: 0 20px;
+}
+
+.elevation-tool .mesh-modifications Toggle {
+	margin: 0;
+}
+
+.elevation-tool .mesh-modifications Toggle Label {
+	margin-left: 8px;
+}
+
+.elevation-tool .mesh-modifications .spacer {
+	flex-grow: 1;
+}
+
+.elevation-tool .mesh-modifications #open-mesh-modifications-tool Image {
+	--unity-image: resource("Images/MapCreator/OverlayToolbar/Settings_48x48");
+	opacity: 0.7;
+}
+
+.elevation-tool .mesh-modifications #open-mesh-modifications-tool Image:hover {
+	opacity: 1;
+}
+
+.elevation-tool ArcGISMapCreatorElevationWidget {
+	flex-grow: 1;
+}
+
+.elevation-tool ArcGISMapCreatorElevationWidget ListView {
+	flex-grow: 1;
+}
+
+.elevation-tool ArcGISMapCreatorElevationWidget ListView .unity-list-view__item:hover {
+	background-color: transparent;
+}
+
+.elevation-tool .footer {
+	align-content: center;
+	flex-direction: row;
+	flex-shrink: 0;
+	height: 56px;
+	padding-left: 20px;
+	padding-right: 32px;
+}
+
+.elevation-tool .footer .spacer {
+	flex-grow: 1;
+}
+
+.elevation-tool .footer .add-new {
+	align-items: center;
+	flex-direction: row;
+	opacity: 0.7;
+}
+
+.elevation-tool .footer .add-new:hover {
+	opacity: 1;
+}
+
+.elevation-tool .footer .add-new .plus {
+	background-image: resource("Images/MapCreator/PlusIcon");
+	height: 10px;
+	margin-right: 8px;
+	opacity: 0.7;
+	width: 10px;
+}
+
+.elevation-tool .footer .add-new TextElement {
+	height: 15px;
+}

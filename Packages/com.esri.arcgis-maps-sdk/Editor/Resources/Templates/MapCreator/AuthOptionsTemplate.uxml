@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+	xsi:schemaLocation="
+                        UnityEngine.UIElements ../../../../../../UIElementsSchema/UnityEngine.UIElements.xsd
+                        UnityEditor.UIElements ../../../../../../UIElementsSchema/UnityEditor.UIElements.xsd
+                        UnityEditor.PackageManager.UI ../../../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd"
+>
+
+<Button class="layer-options-dropdown-button" name="config-options-move-up" text="Move Up"/>
+<Button class="layer-options-dropdown-button" name="config-options-move-down" text="Move Down"/>
+
+<VisualElement class="layer-options-dropdown-bar"/>
+<Button class="layer-options-dropdown-button" name="config-options-rename" text="Rename"/>
+
+<VisualElement class="layer-options-dropdown-bar"/>
+<Button class="layer-options-dropdown-button" name="config-options-remove" text="Remove"/>
+
+</UXML>

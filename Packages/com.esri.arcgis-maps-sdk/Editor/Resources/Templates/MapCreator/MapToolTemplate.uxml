@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+	xsi:schemaLocation="
+                        UnityEngine.UIElements ../../../../../../UIElementsSchema/UnityEngine.UIElements.xsd
+                        UnityEditor.UIElements ../../../../../../UIElementsSchema/UnityEditor.UIElements.xsd
+                        UnityEditor.PackageManager.UI ../../../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd"
+>
+
+<ScrollView>
+
+	<VisualElement class="esri-logo"/>
+
+	<VisualElement class="tool-holder">
+
+		<Foldout class="main-foldout" text="Map Type">
+
+			<VisualElement name="map-type-buttons">
+
+				<Button name="select-global-button" text="Global" class="map-type" />
+				<Button name="select-local-button" text="Local" class="map-type" />
+
+			</VisualElement>
+
+        </Foldout>
+
+		<Foldout class="main-foldout" name="foldout-origin-location" text="Origin Position">
+
+			<editor:DoubleField label="X" name="map-origin-x-text"/>
+			<editor:DoubleField label="Y" name="map-origin-y-text"/>
+			<editor:DoubleField label="Z" name="map-origin-z-text"/>
+			<editor:IntegerField label="Spatial Reference WKID" name="map-origin-wkid-text"/>
+
+        </Foldout>
+
+		<Foldout class="main-foldout" name="category-map-extent" text="Map Extent">
+
+			<Toggle name="toggle-enable-map-extent" label="Enable Map Extent"/>
+			<Toggle name="toggle-origin-center-extent" label="Use Origin Position as Center"/>
+			
+			<VisualElement name="map-extent-fields">
+
+				<Foldout class="empty-foldout" name="geographic-center-fields" text="Geographic Center">
+
+					<editor:DoubleField label="X" name="map-extent-x-text"/>
+					<editor:DoubleField label="Y" name="map-extent-y-text"/>
+					<editor:IntegerField label="Spatial Reference WKID" name="map-extent-wkid-text"/>
+
+				</Foldout>
+
+				<Foldout class="empty-foldout" text="Shape Extent">
+
+					<editor:EnumField label="Shape" name="map-shape-selector" type="Esri.ArcGISMapsSDK.Components.MapExtentShapes, ArcGISMapsSDK"/>
+
+					<VisualElement class="extent-shape-dimensions-holder">
+
+						<Label name="extent-shape-dimensions-label" text="Shape Dimensions"/>
+						<editor:DoubleField label="X" name="map-shape-dimensions-x-text"/>
+						<editor:DoubleField label="Y" name="map-shape-dimensions-y-text"/>
+
+					</VisualElement>
+
+				</Foldout>
+
+			</VisualElement>
+
+		</Foldout>
+
+	</VisualElement>
+
+	<VisualElement class="create-button-holder">
+
+		<Button class="button-create" name="button-create-map" text="Create Map"></Button>
+	
+	</VisualElement>
+
+</ScrollView>
+
+</UXML>

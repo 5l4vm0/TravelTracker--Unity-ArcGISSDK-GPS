@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+	xsi:schemaLocation="
+                        UnityEngine.UIElements ../../../../../../UIElementsSchema/UnityEngine.UIElements.xsd
+                        UnityEditor.UIElements ../../../../../../UIElementsSchema/UnityEditor.UIElements.xsd
+                        UnityEditor.PackageManager.UI ../../../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd"
+>
+
+<ScrollView>
+
+	<VisualElement class="tool-holder">
+
+	    <Foldout class="main-foldout add-data-foldout" text="API Key">
+
+			<TextField name="api-key-text" label="API Key"/>
+			
+			<VisualElement name="api-key-documentation-holder">
+
+				<Label class="hyperlink-text" name="api-key-documentation-link" text="Get an API Key"/>
+
+			</VisualElement>
+
+		</Foldout>
+
+	    <Foldout class="main-foldout add-data-foldout" text="Add Authentication Configuration">
+        
+			<TextField name="add-data-auth-name-text" label="Name"/>
+			<TextField name="add-data-auth-client-text" label="Client ID"/>
+			<TextField name="add-data-auth-uri-text" label="Redirect URI"/>
+
+			<VisualElement class="add-data-button-holder">
+
+				<VisualElement class="add-data-holder-spacer"/>
+				<Button class="button-add-data" name="button-add-data-clear" text="Clear"/>
+				<Button class="button-add-data" name="button-add-data-add" text="Add"/>
+			
+			</VisualElement>
+
+        </Foldout>
+
+		<Foldout class="main-foldout" text="Authentication Configurations">
+
+			<VisualElement name="config-holder"/>
+
+        </Foldout>
+
+	</VisualElement>
+
+</ScrollView>
+
+</UXML>

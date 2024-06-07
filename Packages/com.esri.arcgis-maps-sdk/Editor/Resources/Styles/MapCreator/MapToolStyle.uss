@@ -1,0 +1,62 @@
+.esri-logo {
+	background-image: resource("Images/MapCreator/MapTool/esri_logo");
+	min-height: 100px;
+	flex: 1;
+	-unity-background-scale-mode: scale-to-fit;
+}
+
+#map-extent-fields {
+	margin-left: 4px;
+}
+
+#map-type-buttons {
+	align-items: center;
+	justify-content: center;
+	flex-direction: row;
+	margin-right: 14px;
+}
+
+#select-global-button {
+	flex: 1;
+	margin-right: 0px;
+	max-width: 100px;
+	height: 25px;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+
+#select-local-button {
+	flex: 1;
+	margin-left: 0px;
+	max-width: 100px;
+	height: 25px;
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
+.extent-shape-dimensions-holder {
+	flex-direction: row;
+	margin-left: 3px;
+}
+
+.extent-shape-dimensions-holder #extent-shape-dimensions-label {
+	margin-right: 51px;
+}
+
+.extent-shape-dimensions-holder > DoubleField {
+	flex: 1;
+}
+
+.extent-shape-dimensions-holder > DoubleField > .unity-base-field__label {
+	min-width: 20px;
+	margin-right: 2px;
+}
+
+#map-type-buttons .map-type:hover {
+	background-color: #7E7E7E
+}
+
+#map-type-buttons .map-type:disabled {
+	background-color: #006fb7;
+	opacity: 1;
+}

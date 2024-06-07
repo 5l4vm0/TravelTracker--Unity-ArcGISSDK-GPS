@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+	<ui:VisualElement name="label-element" >
+		<ui:Toggle />
+		<ui:Label />
+		<ui:TextField />
+	</ui:VisualElement>
+	<ui:VisualElement name="spacer" />
+	<ui:VisualElement name="buttons-element" >
+		<ui:Button name="duplicate">
+			<ui:Image />
+		</ui:Button>
+		<ui:Button name="delete">
+			<ui:Image />
+		</ui:Button>
+		<ui:Button name="edit">
+			<ui:Image />
+		</ui:Button>
+	</ui:VisualElement>
+</ui:UXML>
