@@ -20,7 +20,6 @@ public class TestLocationService : MonoBehaviour
 #elif UNITY_ANDROID
         if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.CoarseLocation)) {
             UnityEngine.Android.Permission.RequestUserPermission(UnityEngine.Android.Permission.CoarseLocation);
-            Debug.Log("wasd allow location");
         }
 
         // First, check if user has location service enabled
@@ -38,7 +37,7 @@ public class TestLocationService : MonoBehaviour
         }
 #endif
         // Start service before querying location
-        UnityEngine.Input.location.Start(25f, 25f); //Start(float desiredAccuracyInMeters, float updateDistanceInMeters);
+        UnityEngine.Input.location.Start(25f, 5f); //Start(float desiredAccuracyInMeters, float updateDistanceInMeters);
         // desiredAccuracyInMeters = The service accuracy you want to use, in meters. This determines the accuracy of the device's last location coordinates.
         // updateDistanceInMeters = The minimum distance, in meters, that the device must move laterally before Unity updates location
 
