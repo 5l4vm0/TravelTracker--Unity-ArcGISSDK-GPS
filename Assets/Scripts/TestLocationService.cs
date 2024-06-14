@@ -1,11 +1,23 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
+using Esri.ArcGISMapsSDK.Components;
+using Unity.Mathematics;
+using Esri.GameEngine.Geometry;
 
 public class TestLocationService : MonoBehaviour
 {
+    [SerializeField] private ArcGISMapComponent _mapRef;
+    [SerializeField] private Image _playerPositionDot;
+    [SerializeField] private ArcGISPoint _gpsPosition;
+
     private void Start()
     {
         StartCoroutine(LocationCoroutine());
+       
+        _gpsPosition = _mapRef.Extent.GeographicCenter;
+        Debug.Log("gpsPosition is " + _gpsPosition);
+        
     }
 
     IEnumerator LocationCoroutine()
@@ -88,6 +100,9 @@ public class TestLocationService : MonoBehaviour
             var _longitude = UnityEngine.Input.location.lastData.longitude;
 
             // TODO success do something with location
+            _playerPositionDot.GetComponent<ArcGISLocationComponent>().Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,10, _gpsPosition.SpatialReference);
+            Debug.Log("player position dot is " + _playerPositionDot.GetComponent<ArcGISPoint>().X+ _playerPositionDot.GetComponent<ArcGISPoint>().Y);
+
         }
 
         // Stop service if there is no need to query location updates continuously
