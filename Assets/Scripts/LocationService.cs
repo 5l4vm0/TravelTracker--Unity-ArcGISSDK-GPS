@@ -1,20 +1,21 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;
 using Esri.ArcGISMapsSDK.Components;
-using Unity.Mathematics;
 using Esri.GameEngine.Geometry;
+using Esri.ArcGISMapsSDK.SDK.Utils;
 
-public class TestLocationService : MonoBehaviour
+public class LocationService : MonoBehaviour
 {
     [SerializeField] private ArcGISLocationComponent _cameraRef;
     [SerializeField] private ArcGISLocationComponent _playerDotRef;
     [SerializeField] private ArcGISPoint _gpsPosition;
+    [SerializeField] private ArcGISMapComponent _mapRef;
+    [SerializeField] [HideAltitude] private ArcGISPoint _geographicCenter;
 
     private void Start()
     {
         StartCoroutine(LocationCoroutine());
-        
+        _geographicCenter = _mapRef.Extent.GeographicCenter;
     }
 
     IEnumerator LocationCoroutine()
@@ -96,11 +97,15 @@ public class TestLocationService : MonoBehaviour
             var _latitude = UnityEngine.Input.location.lastData.latitude;
             var _longitude = UnityEngine.Input.location.lastData.longitude;
             var _altitude = UnityEngine.Input.location.lastData.altitude;
-            var _spatialReference = _gpsPosition.SpatialReference;
+            
 
-            _gpsPosition = new ArcGISPoint(_longitude, _latitude, _altitude, _spatialReference);
+            _gpsPosition = new ArcGISPoint(_longitude, _latitude, _altitude, ArcGISSpatialReference.WGS84());
             _cameraRef.Position = new ArcGISPoint (_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
             _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,10, _gpsPosition.SpatialReference);
+
+            var newExtent = _mapRef.Extent;
+            newExtent.GeographicCenter = _gpsPosition;
+            _mapRef.Extent = newExtent;
 
             yield return new WaitForSecondsRealtime(3);
         }

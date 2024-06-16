@@ -237,7 +237,7 @@ MonoBehaviour:
   m_LocalPosition:
     x: -25401.02863129693
     y: 25.000221252441406
-    z: 6712700.723190186
+    z: 6712700.723190183
   m_LocalRotation:
     value:
       x: 0.70710677
@@ -593,6 +593,12 @@ MonoBehaviour:
   _cameraRef: {fileID: 1527370079}
   _playerDotRef: {fileID: 239936400}
   _gpsPosition:
+    x: 0
+    y: 0
+    z: 0
+    SRWkid: 4326
+  _mapRef: {fileID: 918490618}
+  _geographicCenter:
     x: 0
     y: 0
     z: 0
