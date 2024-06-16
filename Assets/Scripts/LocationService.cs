@@ -3,6 +3,8 @@ using System.Collections;
 using Esri.ArcGISMapsSDK.Components;
 using Esri.GameEngine.Geometry;
 using Esri.ArcGISMapsSDK.SDK.Utils;
+using System.Collections.Generic;
+using System.Linq;
 
 public class LocationService : MonoBehaviour
 {
@@ -10,12 +12,12 @@ public class LocationService : MonoBehaviour
     [SerializeField] private ArcGISLocationComponent _playerDotRef;
     [SerializeField] private ArcGISPoint _gpsPosition;
     [SerializeField] private ArcGISMapComponent _mapRef;
-    [SerializeField] [HideAltitude] private ArcGISPoint _geographicCenter;
+    private List<ArcGISPoint> _visitedPosList = new List<ArcGISPoint>();
 
     private void Start()
     {
         StartCoroutine(LocationCoroutine());
-        _geographicCenter = _mapRef.Extent.GeographicCenter;
+
     }
 
     IEnumerator LocationCoroutine()
@@ -94,19 +96,32 @@ public class LocationService : MonoBehaviour
                 + UnityEngine.Input.location.lastData.horizontalAccuracy + " "
                 + UnityEngine.Input.location.lastData.timestamp);
 
-            var _latitude = UnityEngine.Input.location.lastData.latitude;
-            var _longitude = UnityEngine.Input.location.lastData.longitude;
-            var _altitude = UnityEngine.Input.location.lastData.altitude;
             
+            var _latitude = UnityEngine.Input.location.lastData.latitude;
+            var _longitude = UnityEngine.Input.location.lastData.longitude ;
+            var _altitude = UnityEngine.Input.location.lastData.altitude;
 
-            _gpsPosition = new ArcGISPoint(_longitude, _latitude, _altitude, ArcGISSpatialReference.WGS84());
+            //Get round up to 5 decimal points
+            _gpsPosition = new ArcGISPoint(Mathf.Round(_longitude *100000f)/100000f, Mathf.Round(_latitude*100000f)/100000f, Mathf.Round(_altitude*100000f)/100000f, ArcGISSpatialReference.WGS84());
             _cameraRef.Position = new ArcGISPoint (_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
             _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,10, _gpsPosition.SpatialReference);
 
+
+            // update map geographic centre position based on GPS position
             var newExtent = _mapRef.Extent;
             newExtent.GeographicCenter = _gpsPosition;
             _mapRef.Extent = newExtent;
 
+
+            //store gpsPosition into _visitedPosArray to if the gps position has not existed in the list yet
+            //In this case, we can have a list to record all gps position data that we have been visited
+            //Create a new comparer so Contains function is comparing the X and Y values
+            ArcGISPointEqualityComparer comparer = new ArcGISPointEqualityComparer();
+            if (!_visitedPosList.Contains(_gpsPosition,comparer))
+            {
+                _visitedPosList.Add(_gpsPosition);
+            }
+            
             yield return new WaitForSecondsRealtime(3);
         }
 
