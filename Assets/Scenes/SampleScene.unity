@@ -160,7 +160,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -1168, y: 76}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &239936398
 MonoBehaviour:
@@ -182,7 +182,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -213,10 +213,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   position:
-    x: -25401.02863129693
-    y: 6712700.723190186
+    x: -0.228181322518516
+    y: 51.51387557557095
     z: 25.000221252441406
-    SRWkid: 3857
+    SRWkid: 4326
   rotation:
     Heading: 0
     Pitch: 0
@@ -590,8 +590,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44acf6b62f5514c49b128832aa2591ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mapRef: {fileID: 918490618}
-  _playerPositionDot: {fileID: 239936398}
+  _cameraRef: {fileID: 1527370079}
+  _playerDotRef: {fileID: 239936400}
   _gpsPosition:
     x: 0
     y: 0
@@ -661,7 +661,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position:
     x: -0.217689
-    y: 51.51345069999998
+    y: 51.51345069999997
     z: 556
     SRWkid: 4326
   rotation:

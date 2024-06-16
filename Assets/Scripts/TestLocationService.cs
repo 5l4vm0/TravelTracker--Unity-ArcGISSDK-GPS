@@ -7,16 +7,13 @@ using Esri.GameEngine.Geometry;
 
 public class TestLocationService : MonoBehaviour
 {
-    [SerializeField] private ArcGISMapComponent _mapRef;
-    [SerializeField] private Image _playerPositionDot;
+    [SerializeField] private ArcGISLocationComponent _cameraRef;
+    [SerializeField] private ArcGISLocationComponent _playerDotRef;
     [SerializeField] private ArcGISPoint _gpsPosition;
 
     private void Start()
     {
         StartCoroutine(LocationCoroutine());
-       
-        _gpsPosition = _mapRef.Extent.GeographicCenter;
-        Debug.Log("gpsPosition is " + _gpsPosition);
         
     }
 
@@ -49,7 +46,7 @@ public class TestLocationService : MonoBehaviour
         }
 #endif
         // Start service before querying location
-        UnityEngine.Input.location.Start(25f, 5f); //Start(float desiredAccuracyInMeters, float updateDistanceInMeters);
+        UnityEngine.Input.location.Start(25f, 0.1f); //Start(float desiredAccuracyInMeters, float updateDistanceInMeters);
         // desiredAccuracyInMeters = The service accuracy you want to use, in meters. This determines the accuracy of the device's last location coordinates.
         // updateDistanceInMeters = The minimum distance, in meters, that the device must move laterally before Unity updates location
 
@@ -85,7 +82,7 @@ public class TestLocationService : MonoBehaviour
             Debug.LogFormat("Unable to determine device location. Failed with status {0}", UnityEngine.Input.location.status);
             yield break;
         }
-        else
+        while(UnityEngine.Input.location.status == LocationServiceStatus.Running)
         {
             Debug.LogFormat("Location service live. status {0}", UnityEngine.Input.location.status);
             // Access granted and location value could be retrieved
@@ -98,11 +95,14 @@ public class TestLocationService : MonoBehaviour
 
             var _latitude = UnityEngine.Input.location.lastData.latitude;
             var _longitude = UnityEngine.Input.location.lastData.longitude;
+            var _altitude = UnityEngine.Input.location.lastData.altitude;
+            var _spatialReference = _gpsPosition.SpatialReference;
 
-            // TODO success do something with location
-            _playerPositionDot.GetComponent<ArcGISLocationComponent>().Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,10, _gpsPosition.SpatialReference);
-            Debug.Log("player position dot is " + _playerPositionDot.GetComponent<ArcGISPoint>().X+ _playerPositionDot.GetComponent<ArcGISPoint>().Y);
+            _gpsPosition = new ArcGISPoint(_longitude, _latitude, _altitude, _spatialReference);
+            _cameraRef.Position = new ArcGISPoint (_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
+            _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,10, _gpsPosition.SpatialReference);
 
+            yield return new WaitForSecondsRealtime(3);
         }
 
         // Stop service if there is no need to query location updates continuously
