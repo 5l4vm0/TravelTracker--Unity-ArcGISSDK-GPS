@@ -34,8 +34,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _Alpha: 0.5
+    - _AspectRatio: 1.939394
     - _FilterStrength: 1
-    - _MouseRadius: 0.1
+    - _MouseRadius: 0.01
     m_Colors:
     - _MousePos: {r: -1, g: -1, b: 0, a: 0}
+    - _ScreenParams: {r: 550, g: 307, b: 0, a: 0}
   m_BuildTextureStacks: []
