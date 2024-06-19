@@ -5,6 +5,7 @@ using Esri.GameEngine.Geometry;
 using Esri.ArcGISMapsSDK.SDK.Utils;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 public class LocationService : MonoBehaviour
 {
@@ -13,11 +14,13 @@ public class LocationService : MonoBehaviour
     [SerializeField] private ArcGISPoint _gpsPosition;
     [SerializeField] private ArcGISMapComponent _mapRef;
     private List<ArcGISPoint> _visitedPosList = new List<ArcGISPoint>();
+    private float elapsedTime;
+    private StringBuilder allVisitedPos;
 
     private void Start()
     {
         StartCoroutine(LocationCoroutine());
-
+        allVisitedPos = new StringBuilder();
     }
 
     IEnumerator LocationCoroutine()
@@ -87,14 +90,14 @@ public class LocationService : MonoBehaviour
         }
         while(UnityEngine.Input.location.status == LocationServiceStatus.Running)
         {
-            Debug.LogFormat("Location service live. status {0}", UnityEngine.Input.location.status);
+            //Debug.LogFormat("Location service live. status {0}", UnityEngine.Input.location.status);
             // Access granted and location value could be retrieved
-            Debug.LogFormat("Location: "
-                + UnityEngine.Input.location.lastData.latitude + " "
-                + UnityEngine.Input.location.lastData.longitude + " "
-                + UnityEngine.Input.location.lastData.altitude + " "
-                + UnityEngine.Input.location.lastData.horizontalAccuracy + " "
-                + UnityEngine.Input.location.lastData.timestamp);
+            //Debug.LogFormat("Location: "
+            //    + UnityEngine.Input.location.lastData.latitude + " "
+            //    + UnityEngine.Input.location.lastData.longitude + " "
+            //    + UnityEngine.Input.location.lastData.altitude + " "
+            //    + UnityEngine.Input.location.lastData.horizontalAccuracy + " "
+            //    + UnityEngine.Input.location.lastData.timestamp);
 
             
             var _latitude = UnityEngine.Input.location.lastData.latitude;
@@ -127,5 +130,22 @@ public class LocationService : MonoBehaviour
 
         // Stop service if there is no need to query location updates continuously
         //UnityEngine.Input.location.Stop();
+    }
+
+    private void Update()
+    {
+        elapsedTime += Time.deltaTime;
+
+
+        if(UnityEngine.Input.location.status == LocationServiceStatus.Running && elapsedTime >= 10)
+        {
+            foreach (ArcGISPoint point in _visitedPosList)
+            {
+                allVisitedPos.Append("pointX"+point.X+" pointY"+point.Y+"/");
+            }
+            Debug.Log("visited positions" + allVisitedPos.ToString());
+            allVisitedPos.Clear();
+            elapsedTime = 0;
+        }
     }
 }
