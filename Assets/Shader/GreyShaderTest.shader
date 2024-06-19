@@ -3,6 +3,7 @@ Shader "Custom/GrayFilterWithAlphaOnClick"
     Properties
     {
         _MainTex("Texture", 2D) = "white" {}
+        _MaskTex("Mask Texture", 2D) = "black"{}
         _FilterStrength("Filter Strength", Range(0, 1)) = 1.0
         _Alpha("Alpha", Range(0, 1)) = 1.0
         _MousePos("Mouse Position", Vector) = (0,0,0,0)
@@ -36,6 +37,7 @@ Shader "Custom/GrayFilterWithAlphaOnClick"
                 };
 
                 sampler2D _MainTex;
+                sampler2D _MaskTex;
                 float4 _MainTex_ST;
                 float _FilterStrength;
                 float _Alpha;
@@ -70,14 +72,11 @@ Shader "Custom/GrayFilterWithAlphaOnClick"
                 // Adjust the mouse position by the aspect ratio
                 float2 adjustedMousePos = float2(_MousePos.x, _MousePos.y / _AspectRatio);
 
-                // Get the distance from the current pixel to the adjusted mouse position
-                float dist = distance(adjustedUV, adjustedMousePos);
+                // Sample the mask texture to determine alpha
+                float maskAlpha = tex2D(_MaskTex, i.uv).r;
 
-                // If the distance is within the radius, set alpha to 0
-                if (dist < _MouseRadius)
-                {
-                    col.a = 0;
-                }
+                // Apply the mask alpha
+                col.a *= maskAlpha;
 
                 return col;
             }
