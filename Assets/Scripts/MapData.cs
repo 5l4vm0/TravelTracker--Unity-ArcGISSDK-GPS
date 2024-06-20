@@ -6,10 +6,10 @@ public class MapData
 {
     public double[] visitedPos;
 
-    public MapData(ArcGISPoint visitedGITPoint)
+    public MapData(ArcGISPoint visitedGISPoint)
     {
         visitedPos = new double[2];
-        visitedPos[0] = visitedGITPoint.X;
-        visitedPos[1] = visitedGITPoint.Y;
+        visitedPos[0] = visitedGISPoint.X;
+        visitedPos[1] = visitedGISPoint.Y;
     }
 }
