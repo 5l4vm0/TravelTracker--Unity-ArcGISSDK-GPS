@@ -146,6 +146,8 @@ public class LocationService : MonoBehaviour
             Debug.Log("visited positions" + allVisitedPos.ToString());
             allVisitedPos.Clear();
             elapsedTime = 0;
+            SaveSystem.SavePositions(_visitedPosList[0]);
         }
+
     }
 }
