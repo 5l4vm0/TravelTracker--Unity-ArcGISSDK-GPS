@@ -16,11 +16,19 @@ public class LocationService : MonoBehaviour
     private List<ArcGISPoint> _visitedPosList = new List<ArcGISPoint>();
     private float elapsedTime;
     private StringBuilder allVisitedPos;
+    private List<ArcGISPoint> savedPos;
 
     private void Start()
     {
         StartCoroutine(LocationCoroutine());
         allVisitedPos = new StringBuilder();
+        savedPos = SaveSystem.LoadPositions();
+        foreach (ArcGISPoint point in savedPos)
+        {
+            allVisitedPos.Append("pointX" + point.X + " pointY" + point.Y + "/");
+        }
+        Debug.Log("Loaded visited positions" + allVisitedPos.ToString());
+        allVisitedPos.Clear();
     }
 
     IEnumerator LocationCoroutine()
@@ -123,6 +131,7 @@ public class LocationService : MonoBehaviour
             if (!_visitedPosList.Contains(_gpsPosition,comparer))
             {
                 _visitedPosList.Add(_gpsPosition);
+               
             }
             
             yield return new WaitForSecondsRealtime(3);
@@ -139,14 +148,16 @@ public class LocationService : MonoBehaviour
 
         if(UnityEngine.Input.location.status == LocationServiceStatus.Running && elapsedTime >= 10)
         {
+            // This foreach loop just to print allVisitedPos in editor
             foreach (ArcGISPoint point in _visitedPosList)
             {
                 allVisitedPos.Append("pointX"+point.X+" pointY"+point.Y+"/");
             }
             Debug.Log("visited positions" + allVisitedPos.ToString());
             allVisitedPos.Clear();
+
             elapsedTime = 0;
-            SaveSystem.SavePositions(_visitedPosList[0]);
+            SaveSystem.SavePositions(_visitedPosList);
         }
 
     }
