@@ -23,12 +23,15 @@ public class LocationService : MonoBehaviour
         StartCoroutine(LocationCoroutine());
         allVisitedPos = new StringBuilder();
         savedPos = SaveSystem.LoadPositions();
-        foreach (ArcGISPoint point in savedPos)
+        if(savedPos != null)
         {
-            allVisitedPos.Append("pointX" + point.X + " pointY" + point.Y + "/");
+            foreach (ArcGISPoint point in savedPos)
+            {
+                allVisitedPos.Append("pointX" + point.X + " pointY" + point.Y + "/");
+            }
+            Debug.Log("Loaded visited positions" + allVisitedPos.ToString());
+            allVisitedPos.Clear();
         }
-        Debug.Log("Loaded visited positions" + allVisitedPos.ToString());
-        allVisitedPos.Clear();
     }
 
     IEnumerator LocationCoroutine()
