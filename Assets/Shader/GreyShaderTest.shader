@@ -3,12 +3,12 @@ Shader "Custom/GrayFilterWithAlphaOnClick"
     Properties
     {
         _MainTex("Texture", 2D) = "white" {}
-        _MaskTex("Mask Texture", 2D) = "black"{}
+        _MaskTex("Mask Texture", 2D) = "white"{}
         _FilterStrength("Filter Strength", Range(0, 1)) = 1.0
         _Alpha("Alpha", Range(0, 1)) = 1.0
         _MousePos("Mouse Position", Vector) = (0,0,0,0)
         _MouseRadius("Mouse Radius", Float) = 0.1
-        _AspectRatio("Aspect Ratio", Float) = 1.0
+        //_AspectRatio("Aspect Ratio", Float) = 1.0
     }
         SubShader
         {
@@ -43,7 +43,7 @@ Shader "Custom/GrayFilterWithAlphaOnClick"
                 float _Alpha;
                 float2 _MousePos;
                 float _MouseRadius;
-                float _AspectRatio;
+                //float _AspectRatio;
 
                 v2f vert(appdata v)
                 {
@@ -66,11 +66,11 @@ Shader "Custom/GrayFilterWithAlphaOnClick"
                 // Apply alpha transparency
                 col.a *= _Alpha;
 
-                // Adjust the UV coordinates by the aspect ratio
-                float2 adjustedUV = float2(i.uv.x, i.uv.y / _AspectRatio);
+                //// Adjust the UV coordinates by the aspect ratio
+                //float2 adjustedUV = float2(i.uv.x, i.uv.y / _AspectRatio);
 
-                // Adjust the mouse position by the aspect ratio
-                float2 adjustedMousePos = float2(_MousePos.x, _MousePos.y / _AspectRatio);
+                //// Adjust the mouse position by the aspect ratio
+                //float2 adjustedMousePos = float2(_MousePos.x, _MousePos.y / _AspectRatio);
 
                 // Sample the mask texture to determine alpha
                 float maskAlpha = tex2D(_MaskTex, i.uv).r;

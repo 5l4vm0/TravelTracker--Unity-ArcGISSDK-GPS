@@ -23,8 +23,8 @@ public class MouseInputToShader : MonoBehaviour
         material.SetTexture("_MaskTex", maskTexture);
 
         // Calculate and set the aspect ratio
-        float aspectRatio = (float)Screen.width / Screen.height;
-        material.SetFloat("_AspectRatio", aspectRatio);
+        //float aspectRatio = (float)Screen.width / Screen.height;
+        //material.SetFloat("_AspectRatio", aspectRatio);
     }
 
     void Update()
