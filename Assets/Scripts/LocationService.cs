@@ -17,17 +17,23 @@ public class LocationService : MonoBehaviour
     private float elapsedTime;
     private StringBuilder allVisitedPos;
     private List<ArcGISPoint> savedPos;
+    [SerializeField] private GisPosToPixel gisPostToPixel;
+    [SerializeField] private GISPosShader shaderImage;
+    private Vector2 _pointInUV;
 
     private void Start()
     {
         StartCoroutine(LocationCoroutine());
         allVisitedPos = new StringBuilder();
         savedPos = SaveSystem.LoadPositions();
+        
         if(savedPos != null)
         {
             foreach (ArcGISPoint point in savedPos)
             {
                 allVisitedPos.Append("pointX" + point.X + " pointY" + point.Y + "/");
+                _pointInUV = gisPostToPixel.gisPosToPixelMethod(point);
+                shaderImage.updateTexture(_pointInUV);
             }
             Debug.Log("Loaded visited positions" + allVisitedPos.ToString());
             allVisitedPos.Clear();
@@ -134,7 +140,8 @@ public class LocationService : MonoBehaviour
             if (!_visitedPosList.Contains(_gpsPosition,comparer))
             {
                 _visitedPosList.Add(_gpsPosition);
-               
+                _pointInUV = gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
+                shaderImage.updateTexture(_pointInUV);
             }
             
             yield return new WaitForSecondsRealtime(3);

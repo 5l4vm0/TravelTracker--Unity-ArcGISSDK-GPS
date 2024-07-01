@@ -237,7 +237,7 @@ MonoBehaviour:
   m_LocalPosition:
     x: -25232.02863129693
     y: 560.0018310546875
-    z: 6713229.7217177125
+    z: 6713229.721717714
   m_LocalRotation:
     value:
       x: 0.70710677
@@ -754,8 +754,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 979087213}
   - {fileID: 239936397}
+  - {fileID: 979087213}
   - {fileID: 684528437}
   - {fileID: 1048983422}
   - {fileID: 1817218794}
@@ -1219,6 +1219,8 @@ MonoBehaviour:
     z: 0
     SRWkid: 4326
   _mapRef: {fileID: 918490618}
+  gisPostToPixel: {fileID: 979087214}
+  shaderImage: {fileID: 979087216}
 --- !u!4 &1275409334
 Transform:
   m_ObjectHideFlags: 0
