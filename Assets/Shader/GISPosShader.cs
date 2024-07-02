@@ -4,7 +4,6 @@ using UnityEngine;
 public class GISPosShader : MonoBehaviour
 {
     public Material material;  // Assign the material using this shader in the inspector
-    public float mouseRadius = 0.1f;
     public Texture2D maskTexture; // Mask texture to store alpha changes
 
     void Start()
@@ -55,14 +54,19 @@ public class GISPosShader : MonoBehaviour
     public void updateTexture(Vector2 pointInUV)
     {
         int x = (int)(pointInUV.x * maskTexture.width);
-        int y = (int)(pointInUV.y * maskTexture.height); 
-        for (int i = -10; i <= 10; i++) 
+        int y = (int)(pointInUV.y * maskTexture.height);
+        int radius = (int)(0.01f * maskTexture.width);
+        
+        for (int i = -radius; i <= radius; i++) 
         {
-            for (int j = -10; j <= 10; j++)
+            for (int j = -radius; j <= radius; j++)
             {
-                if (x + i >= 0 && x + i < maskTexture.width && y + j >= 0 && y + j < maskTexture.height)
+                if(i*i + j*j <= radius*radius)
                 {
-                    maskTexture.SetPixel(x + i, y + j, Color.black);
+                    if (x + i >= 0 && x + i < maskTexture.width && y + j >= 0 && y + j < maskTexture.height)
+                    {
+                        maskTexture.SetPixel(x + i, y + j, Color.black);
+                    }
                 }
             }
         }

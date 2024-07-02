@@ -44,4 +44,5 @@ Material:
     m_Colors:
     - _MousePos: {r: -1, g: -1, b: 0, a: 0}
     - _ScreenParams: {r: 550, g: 307, b: 0, a: 0}
+    - _gisPos: {r: 602, g: 455, b: 0, a: 0}
   m_BuildTextureStacks: []
