@@ -20,6 +20,8 @@ public class LocationService : MonoBehaviour
     [SerializeField] private GisPosToPixel gisPostToPixel;
     [SerializeField] private GISPosShader shaderImage;
     private Vector2 _pointInUV;
+    private ArcGISPoint _lastPosition;
+    private Vector2 _lastPointInUV;
 
     private void Start()
     {
@@ -33,7 +35,7 @@ public class LocationService : MonoBehaviour
             {
                 allVisitedPos.Append("pointX" + point.X + " pointY" + point.Y + "/");
                 _pointInUV = gisPostToPixel.gisPosToPixelMethod(point);
-                shaderImage.updateTexture(_pointInUV);
+                shaderImage.updatePositionInTexture(_pointInUV);
             }
             Debug.Log("Loaded visited positions" + allVisitedPos.ToString());
             allVisitedPos.Clear();
@@ -125,7 +127,7 @@ public class LocationService : MonoBehaviour
             _gpsPosition = new ArcGISPoint(Mathf.Round(_longitude *100000f)/100000f, Mathf.Round(_latitude*100000f)/100000f, Mathf.Round(_altitude*100000f)/100000f, ArcGISSpatialReference.WGS84());
             _cameraRef.Position = new ArcGISPoint (_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
             _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,10, _gpsPosition.SpatialReference);
-
+            
 
             // update map geographic centre position based on GPS position
             var newExtent = _mapRef.Extent;
@@ -141,7 +143,14 @@ public class LocationService : MonoBehaviour
             {
                 _visitedPosList.Add(_gpsPosition);
                 _pointInUV = gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
-                shaderImage.updateTexture(_pointInUV);
+                shaderImage.updatePositionInTexture(_pointInUV);
+                if(_lastPosition == null)
+                {
+                    _lastPosition = _gpsPosition;
+                }
+                _lastPointInUV = gisPostToPixel.gisPosToPixelMethod(_lastPosition);
+                shaderImage.updateLineInTexture(_pointInUV, _lastPointInUV);
+                _lastPosition = _gpsPosition;
             }
             
             yield return new WaitForSecondsRealtime(3);

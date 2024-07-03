@@ -51,7 +51,7 @@ public class GISPosShader : MonoBehaviour
         //}
     }
 
-    public void updateTexture(Vector2 pointInUV)
+    public void updatePositionInTexture(Vector2 pointInUV)
     {
         int x = (int)(pointInUV.x * maskTexture.width);
         int y = (int)(pointInUV.y * maskTexture.height);
@@ -70,6 +70,58 @@ public class GISPosShader : MonoBehaviour
                 }
             }
         }
+        maskTexture.Apply();
+    }
+
+    public void updateLineInTexture(Vector2 pointNew, Vector2 pointOld)
+    {
+        int x0 = (int)(pointOld.x * maskTexture.width);
+        int y0 = (int)(pointOld.y * maskTexture.height);
+        int x1 = (int)(pointNew.x * maskTexture.width);
+        int y1 = (int)(pointNew.y * maskTexture.height);
+
+        int dx = Mathf.Abs(x1 - x0);
+        int dy = Mathf.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+
+        int radius = (int)(0.01f * maskTexture.width);
+
+        while (true)
+        {
+            for (int i = -radius; i <= radius; i++)
+            {
+                for (int j = -radius; j <= radius; j++)
+                {
+                    if (i * i + j * j <= radius * radius)
+                    {
+                        int pixelX = x0 + i;
+                        int pixelY = y0 + j;
+
+                        if (pixelX >= 0 && pixelX < maskTexture.width && pixelY >= 0 && pixelY < maskTexture.height)
+                        {
+                            maskTexture.SetPixel(pixelX, pixelY, Color.black);
+                        }
+                    }
+                }
+            }
+
+            if (x0 == x1 && y0 == y1) break;
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
+
         maskTexture.Apply();
     }
 }
