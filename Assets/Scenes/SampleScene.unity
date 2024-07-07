@@ -337,7 +337,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: f4adc8ac5e9c7424eba906bfe2309233, type: 2}
-  mouseRadius: 0.01
   maskTexture: {fileID: 0}
 --- !u!1 &659634449
 GameObject:
@@ -990,7 +989,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: f4adc8ac5e9c7424eba906bfe2309233, type: 2}
-  mouseRadius: 0.01
   maskTexture: {fileID: 0}
 --- !u!114 &979087217
 MonoBehaviour:
@@ -1249,6 +1247,7 @@ GameObject:
   - component: {fileID: 1527370081}
   - component: {fileID: 1527370080}
   - component: {fileID: 1527370079}
+  - component: {fileID: 1527370083}
   m_Layer: 0
   m_Name: ArcGISCamera
   m_TagString: MainCamera
@@ -1389,6 +1388,20 @@ MonoBehaviour:
     x: 1
     y: 1
     z: 1
+--- !u!114 &1527370083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1527370077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19ca3a67f6631c40a58dc7c2a217b03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zoomOutMin: 600
+  zoomOutMax: 1000
 --- !u!1 &1817218793
 GameObject:
   m_ObjectHideFlags: 0
