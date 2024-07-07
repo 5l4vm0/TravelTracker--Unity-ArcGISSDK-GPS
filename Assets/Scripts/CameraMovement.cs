@@ -6,7 +6,8 @@ public class CameraMovement : MonoBehaviour
 {
     Vector3 _touchStart;
     [SerializeField] private float zoomOutMin = 600;
-    [SerializeField] private float zoomOutMax = 1000;
+    [SerializeField] private float zoomOutMax = 2000;
+    [SerializeField] private LocationService _locationSeerviceRef;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +27,7 @@ public class CameraMovement : MonoBehaviour
         {
             Vector3 direction = _touchStart - Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Camera.main.transform.position += direction;
+            _locationSeerviceRef.CamInCentre = false;
         }
         
         if(Input.touchCount ==2)

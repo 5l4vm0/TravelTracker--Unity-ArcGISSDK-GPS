@@ -1217,8 +1217,9 @@ MonoBehaviour:
     z: 0
     SRWkid: 4326
   _mapRef: {fileID: 918490618}
-  gisPostToPixel: {fileID: 979087214}
-  shaderImage: {fileID: 979087216}
+  _gisPostToPixel: {fileID: 979087214}
+  _shaderImage: {fileID: 979087216}
+  CamInCentre: 1
 --- !u!4 &1275409334
 Transform:
   m_ObjectHideFlags: 0
@@ -1401,7 +1402,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoomOutMin: 600
-  zoomOutMax: 1000
+  zoomOutMax: 2000
+  _locationSeerviceRef: {fileID: 1275409333}
 --- !u!1 &1817218793
 GameObject:
   m_ObjectHideFlags: 0

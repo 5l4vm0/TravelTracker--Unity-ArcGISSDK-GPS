@@ -14,31 +14,32 @@ public class LocationService : MonoBehaviour
     [SerializeField] private ArcGISPoint _gpsPosition;
     [SerializeField] private ArcGISMapComponent _mapRef;
     private List<ArcGISPoint> _visitedPosList = new List<ArcGISPoint>();
-    private float elapsedTime;
-    private StringBuilder allVisitedPos;
-    private List<ArcGISPoint> savedPos;
-    [SerializeField] private GisPosToPixel gisPostToPixel;
-    [SerializeField] private GISPosShader shaderImage;
+    private float _elapsedTime;
+    private StringBuilder _allVisitedPos;
+    private List<ArcGISPoint> _savedPos;
+    [SerializeField] private GisPosToPixel _gisPostToPixel;
+    [SerializeField] private GISPosShader _shaderImage;
     private Vector2 _pointInUV;
     private ArcGISPoint _lastPosition;
     private Vector2 _lastPointInUV;
+    public bool CamInCentre = true;
 
     private void Start()
     {
         StartCoroutine(LocationCoroutine());
-        allVisitedPos = new StringBuilder();
-        savedPos = SaveSystem.LoadPositions();
+        _allVisitedPos = new StringBuilder();
+        _savedPos = SaveSystem.LoadPositions();
         
-        if(savedPos != null)
+        if(_savedPos != null)
         {
-            foreach (ArcGISPoint point in savedPos)
+            foreach (ArcGISPoint point in _savedPos)
             {
-                allVisitedPos.Append("pointX" + point.X + " pointY" + point.Y + "/");
-                _pointInUV = gisPostToPixel.gisPosToPixelMethod(point);
-                shaderImage.updatePositionInTexture(_pointInUV);
+                _allVisitedPos.Append("pointX" + point.X + " pointY" + point.Y + "/");
+                _pointInUV = _gisPostToPixel.gisPosToPixelMethod(point);
+                _shaderImage.updatePositionInTexture(_pointInUV);
             }
-            Debug.Log("Loaded visited positions" + allVisitedPos.ToString());
-            allVisitedPos.Clear();
+            Debug.Log("Loaded visited positions" + _allVisitedPos.ToString());
+            _allVisitedPos.Clear();
         }
     }
 
@@ -125,7 +126,10 @@ public class LocationService : MonoBehaviour
 
             //Get round up to 5 decimal points
             _gpsPosition = new ArcGISPoint(Mathf.Round(_longitude *100000f)/100000f, Mathf.Round(_latitude*100000f)/100000f, Mathf.Round(_altitude*100000f)/100000f, ArcGISSpatialReference.WGS84());
-            _cameraRef.Position = new ArcGISPoint (_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
+            if(CamInCentre)
+            {
+                _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
+            }
             _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,10, _gpsPosition.SpatialReference);
             
 
@@ -142,14 +146,14 @@ public class LocationService : MonoBehaviour
             if (!_visitedPosList.Contains(_gpsPosition,comparer))
             {
                 _visitedPosList.Add(_gpsPosition);
-                _pointInUV = gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
-                shaderImage.updatePositionInTexture(_pointInUV);
+                _pointInUV = _gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
+                _shaderImage.updatePositionInTexture(_pointInUV);
                 if(_lastPosition == null)
                 {
                     _lastPosition = _gpsPosition;
                 }
-                _lastPointInUV = gisPostToPixel.gisPosToPixelMethod(_lastPosition);
-                shaderImage.updateLineInTexture(_pointInUV, _lastPointInUV);
+                _lastPointInUV = _gisPostToPixel.gisPosToPixelMethod(_lastPosition);
+                _shaderImage.updateLineInTexture(_pointInUV, _lastPointInUV);
                 _lastPosition = _gpsPosition;
             }
             
@@ -162,20 +166,20 @@ public class LocationService : MonoBehaviour
 
     private void Update()
     {
-        elapsedTime += Time.deltaTime;
+        _elapsedTime += Time.deltaTime;
 
 
-        if(UnityEngine.Input.location.status == LocationServiceStatus.Running && elapsedTime >= 10)
+        if(UnityEngine.Input.location.status == LocationServiceStatus.Running && _elapsedTime >= 10)
         {
             // This foreach loop just to print allVisitedPos in editor
             foreach (ArcGISPoint point in _visitedPosList)
             {
-                allVisitedPos.Append("pointX"+point.X+" pointY"+point.Y+"/");
+                _allVisitedPos.Append("pointX"+point.X+" pointY"+point.Y+"/");
             }
-            Debug.Log("visited positions" + allVisitedPos.ToString());
-            allVisitedPos.Clear();
+            Debug.Log("visited positions" + _allVisitedPos.ToString());
+            _allVisitedPos.Clear();
 
-            elapsedTime = 0;
+            _elapsedTime = 0;
             SaveSystem.SavePositions(_visitedPosList);
         }
 
