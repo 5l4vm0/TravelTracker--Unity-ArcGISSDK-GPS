@@ -9,10 +9,23 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private float zoomOutMax = 2000;
     [SerializeField] private LocationService _locationSeerviceRef;
 
+    public Vector3 BottomLeft;
+    public Vector3 BottomRight;
+    public Vector3 TopLeft;
+    public Vector3 TopRight;
+
+    //Singleton
+    public static CameraMovement Instance;
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        Instance = this;
+
+        BottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
+        BottomRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, 0));
+        TopLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 1, 0));
+        TopRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0));
     }
 
     // Update is called once per frame
@@ -51,4 +64,5 @@ public class CameraMovement : MonoBehaviour
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - increment, zoomOutMin, zoomOutMax);
 
     }
+
 }
