@@ -1,0 +1,127 @@
+using Esri.GameEngine.Geometry;
+using UnityEngine;
+
+public class GISPosShader : MonoBehaviour
+{
+    public Material material;  // Assign the material using this shader in the inspector
+    public Texture2D maskTexture; // Mask texture to store alpha changes
+
+    void Start()
+    {
+        // Initialize the mask texture with white color (alpha = 1)
+        maskTexture = new Texture2D(1000, 1000, TextureFormat.RFloat, false);
+        for (int y = 0; y < maskTexture.height; y++)
+        {
+            for (int x = 0; x < maskTexture.width; x++)
+            {
+                maskTexture.SetPixel(x, y, Color.white);
+            }
+        }
+        maskTexture.Apply();
+
+        // Assign the mask texture to the material
+        material.SetTexture("_MaskTex", maskTexture);
+
+        // Calculate and set the aspect ratio
+        //float aspectRatio = (float)Screen.width / Screen.height;
+        //material.SetFloat("_AspectRatio", aspectRatio);
+    }
+
+    void Update()
+    {
+        //if (Input.GetMouseButton(0))  // Detect left mouse button
+        //{
+        //    Vector3 mousePos = Input.mousePosition;
+        //    Vector2 uvMousePos = new Vector2(mousePos.x / Screen.width, mousePos.y / Screen.height);
+
+        //    // Update the mask texture
+        //    int x = (int)(uvMousePos.x * maskTexture.width);
+        //    int y = (int)(uvMousePos.y * maskTexture.height); // Invert y-axis
+        //    for (int i = -10; i <= 10; i++) // Update pixels in a small area around the mouse click
+        //    {
+        //        for (int j = -10; j <= 10; j++)
+        //        {
+        //            if (x + i >= 0 && x + i < maskTexture.width && y + j >= 0 && y + j < maskTexture.height)
+        //            {
+        //                maskTexture.SetPixel(x + i, y + j, Color.black);
+        //            }
+        //        }
+        //    }
+        //    maskTexture.Apply();
+        //}
+    }
+
+    public void updatePositionInTexture(Vector2 pointInUV)
+    {
+        int x = (int)(pointInUV.x * maskTexture.width);
+        int y = (int)(pointInUV.y * maskTexture.height);
+        int radius = (int)(0.01f * maskTexture.width);
+        
+        for (int i = -radius; i <= radius; i++) 
+        {
+            for (int j = -radius; j <= radius; j++)
+            {
+                if(i*i + j*j <= radius*radius)
+                {
+                    if (x + i >= 0 && x + i < maskTexture.width && y + j >= 0 && y + j < maskTexture.height)
+                    {
+                        maskTexture.SetPixel(x + i, y + j, Color.black);
+                    }
+                }
+            }
+        }
+        maskTexture.Apply();
+    }
+
+    public void updateLineInTexture(Vector2 pointNew, Vector2 pointOld)
+    {
+        int x0 = (int)(pointOld.x * maskTexture.width);
+        int y0 = (int)(pointOld.y * maskTexture.height);
+        int x1 = (int)(pointNew.x * maskTexture.width);
+        int y1 = (int)(pointNew.y * maskTexture.height);
+
+        int dx = Mathf.Abs(x1 - x0);
+        int dy = Mathf.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+
+        int radius = (int)(0.01f * maskTexture.width);
+
+        while (true)
+        {
+            for (int i = -radius; i <= radius; i++)
+            {
+                for (int j = -radius; j <= radius; j++)
+                {
+                    if (i * i + j * j <= radius * radius)
+                    {
+                        int pixelX = x0 + i;
+                        int pixelY = y0 + j;
+
+                        if (pixelX >= 0 && pixelX < maskTexture.width && pixelY >= 0 && pixelY < maskTexture.height)
+                        {
+                            maskTexture.SetPixel(pixelX, pixelY, Color.black);
+                        }
+                    }
+                }
+            }
+
+            if (x0 == x1 && y0 == y1) break;
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
+
+        maskTexture.Apply();
+    }
+}
