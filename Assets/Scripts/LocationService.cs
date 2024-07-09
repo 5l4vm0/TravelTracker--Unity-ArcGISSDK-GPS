@@ -130,7 +130,7 @@ public class LocationService : MonoBehaviour
             {
                 _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
             }
-            _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,100, _gpsPosition.SpatialReference);
+            _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,10, _gpsPosition.SpatialReference);
             
 
             // update map geographic centre position based on GPS position
