@@ -6,13 +6,27 @@ using Esri.ArcGISMapsSDK.Components;
 
 public class GisPosToPixel : MonoBehaviour
 {
-    public ArcGISLocationComponent _playeDot;
+
     [SerializeField] private GameObject V0_0;
     [SerializeField] private ArcGISPoint v0_0GIS;
     [SerializeField] private GameObject V1_0;
     [SerializeField] private ArcGISPoint v1_0GIS;
     [SerializeField] private GameObject V0_1;
     [SerializeField] private ArcGISPoint v0_1GIS;
+
+    //properties
+    public ArcGISPoint V0_0GIS 
+    {
+        get { return v0_0GIS; } 
+    }
+    public ArcGISPoint V1_0GIS
+    {
+        get { return v1_0GIS; }
+    }
+    public ArcGISPoint V0_1GIS
+    {
+        get { return v0_1GIS; }
+    }
 
     public void Start()
     {
