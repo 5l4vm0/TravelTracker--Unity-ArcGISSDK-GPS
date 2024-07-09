@@ -131,12 +131,9 @@ public class LocationService : MonoBehaviour
                 _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
             }
             _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,100, _gpsPosition.SpatialReference);
-            
 
-            // update map geographic centre position based on GPS position
-            var newExtent = _mapRef.Extent;
-            newExtent.GeographicCenter = _gpsPosition;
-            _mapRef.Extent = newExtent;
+
+            SetMapCentre(_gpsPosition);
 
 
             //store gpsPosition into _visitedPosArray to if the gps position has not existed in the list yet
@@ -183,5 +180,13 @@ public class LocationService : MonoBehaviour
             SaveSystem.SavePositions(_visitedPosList);
         }
 
+    }
+
+    void SetMapCentre(ArcGISPoint point)
+    {
+        // update map geographic centre position based on GPS position
+        var newExtent = _mapRef.Extent;
+        newExtent.GeographicCenter = point;
+        _mapRef.Extent = newExtent;
     }
 }

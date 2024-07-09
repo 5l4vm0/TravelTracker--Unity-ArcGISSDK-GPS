@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Esri.GameEngine.Geometry;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private float zoomOutMin = 600;
     [SerializeField] private float zoomOutMax = 2000;
     [SerializeField] private LocationService _locationSeerviceRef;
+
 
     public Vector3 BottomLeft;
     public Vector3 BottomRight;
@@ -28,7 +30,7 @@ public class CameraMovement : MonoBehaviour
         TopRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0));
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         if(Input.GetMouseButtonDown(0))
@@ -41,6 +43,13 @@ public class CameraMovement : MonoBehaviour
             Vector3 direction = _touchStart - Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Camera.main.transform.position += direction;
             _locationSeerviceRef.CamInCentre = false;
+        }
+        if(Input.GetMouseButtonUp(0))
+        {
+            
+            Vector3 _cameraCentre = this.transform.position;
+            ShaderTextureTilingController.Instance.AddShaderTexture(ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item1, ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item2);
+
         }
         
         if(Input.touchCount ==2)
@@ -63,6 +72,12 @@ public class CameraMovement : MonoBehaviour
     {
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - increment, zoomOutMin, zoomOutMax);
 
+    }
+
+    public ArcGISPoint GetCameraGISPos()
+    {
+        ArcGISPoint CameraGISPos = this.GetComponent<ArcGISPoint>();
+        return CameraGISPos;
     }
 
 }
