@@ -49,7 +49,6 @@ public class CameraMovement : MonoBehaviour
             
             Vector3 _cameraCentre = this.transform.position;
             ShaderTextureTilingController.Instance.AddShaderTexture(ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item1, ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item2);
-
         }
         
         if(Input.touchCount ==2)
