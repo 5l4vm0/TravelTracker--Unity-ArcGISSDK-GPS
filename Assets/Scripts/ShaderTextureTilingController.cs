@@ -13,6 +13,7 @@ public class ShaderTextureTilingController : MonoBehaviour
     public GameObject ShaderTextureTilePrefab;
     [SerializeField] private GisPosToPixel _greyImageBasedRef;
     public Vector3 BasedRefBottomLeftPos;
+    private Dictionary<Vector2, bool> tiles = new Dictionary<Vector2, bool>();
 
     private void Start()
     {
@@ -24,6 +25,10 @@ public class ShaderTextureTilingController : MonoBehaviour
             for (int y = 0; y < (CameraMovement.Instance.TopLeft.z - CameraMovement.Instance.BottomLeft.z) / 3000; y++)
             {
                 AddShaderTexture(x, y);
+                if(!tiles.ContainsKey(new Vector2(x, y)))
+                {
+                    tiles.Add(new Vector2(x, y), true);
+                }
             }
         }
     }
@@ -39,11 +44,14 @@ public class ShaderTextureTilingController : MonoBehaviour
 
     public void AddShaderTexture(float TileNumberX, float TileNumberY)
     {
-        GameObject newTile = Instantiate(ShaderTextureTilePrefab, new Vector3(BasedRefBottomLeftPos.x+1500+3000*TileNumberX, 25, BasedRefBottomLeftPos.z+1500+3000*TileNumberY), new Quaternion(0,0,0,0), this.transform);
-        if(_greyImageBasedRef == null)
+        if(tiles.ContainsKey(new Vector2(TileNumberX,TileNumberY)))
         {
-            _greyImageBasedRef = newTile.transform.GetChild(0).GetComponent<GisPosToPixel>();
-            //BasedRefPos = _greyImageBasedRef.transform.parent.transform.position;
+            tiles[new Vector2(TileNumberX, TileNumberY)] = true;
+        }
+        else
+        {
+            GameObject newTile = Instantiate(ShaderTextureTilePrefab, new Vector3(BasedRefBottomLeftPos.x + 1500 + 3000 * TileNumberX, 25, BasedRefBottomLeftPos.z + 1500 + 3000 * TileNumberY), new Quaternion(0, 0, 0, 0), this.transform);
+            tiles.Add(new Vector2(TileNumberX, TileNumberY), true);
         }
     }
 
