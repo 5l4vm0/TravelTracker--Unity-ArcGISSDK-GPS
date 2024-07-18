@@ -42,7 +42,6 @@ public class ShaderTextureTilingController : MonoBehaviour
 
     public void AddShaderTexture(int TileNumberX, int TileNumberY)
     {
-        
         if (tiles.ContainsKey(new Vector2(TileNumberX,TileNumberY)))
         {
             tiles[new Vector2(TileNumberX, TileNumberY)] = true;
@@ -50,12 +49,14 @@ public class ShaderTextureTilingController : MonoBehaviour
         else
         {
             GameObject newTile = Instantiate(ShaderTextureTilePrefab, new Vector3(BasedRefBottomLeftPos.x + 1500 + 3000 * TileNumberX, 25, BasedRefBottomLeftPos.z + 1500 + 3000 * TileNumberY), new Quaternion(0, 0, 0, 0), this.transform);
+            newTile.name = $"ShaderTextureTilePrefab [{TileNumberX},{TileNumberY}]";
             tiles.Add(new Vector2(TileNumberX, TileNumberY), true);
         }
     }
 
     public void loopThroughViewport(int CentreTileNumberX, int CentreTileNumberY)
     {
+        
         //Get centre tile number and use BottomRight - BottomLeft/3000 to know how many tiles are visble, divide into 2 so we know how many for each side(left and right), final +1 is for forloop to loop through 
         for (int x = CentreTileNumberX - Mathf.RoundToInt((CameraMovement.Instance.BottomRight.x - CameraMovement.Instance.BottomLeft.x) / 3000 / 2); x <CentreTileNumberX+ Mathf.RoundToInt((CameraMovement.Instance.BottomRight.x - CameraMovement.Instance.BottomLeft.x) / 3000 / 2)+1; x++)
         {
