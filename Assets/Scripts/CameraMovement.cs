@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Esri.GameEngine.Geometry;
+using System;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -9,7 +10,6 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private float zoomOutMin = 600;
     [SerializeField] private float zoomOutMax = 2000;
     [SerializeField] private LocationService _locationSeerviceRef;
-
 
     public Vector3 BottomLeft;
     public Vector3 BottomRight;
@@ -23,11 +23,7 @@ public class CameraMovement : MonoBehaviour
     void Awake()
     {
         Instance = this;
-
-        BottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
-        BottomRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, 0));
-        TopLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 1, 0));
-        TopRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0));
+        updateViewportPoints();
     }
 
 
@@ -51,7 +47,7 @@ public class CameraMovement : MonoBehaviour
             ShaderTextureTilingController.Instance.AddShaderTexture(ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item1, ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item2);
         }
         
-        if(Input.touchCount ==2)
+        if(Input.touchCount ==2 )
         {
             Touch touchZero = Input.GetTouch(0);
             Touch touchOne = Input.GetTouch(1);
@@ -65,18 +61,37 @@ public class CameraMovement : MonoBehaviour
             float difference = currentMagnitude - preMagniture;
             Zoom(difference);
         }
+
     }
 
+    #region private method
+    void Zooming()
+    { 
+    }
+    
     void Zoom (float increment)
     {
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - increment, zoomOutMin, zoomOutMax);
-
+        updateViewportPoints();
+        Vector3 _cameraCentre = this.transform.position;
+        ShaderTextureTilingController.Instance.loopThroughViewport(ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item1, ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item2);
     }
 
+    void updateViewportPoints()
+    {
+        BottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
+        BottomRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, 0));
+        TopLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 1, 0));
+        TopRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0));
+    }
+
+    #endregion
+
+    #region public method
     public ArcGISPoint GetCameraGISPos()
     {
         ArcGISPoint CameraGISPos = this.GetComponent<ArcGISPoint>();
         return CameraGISPos;
     }
-
+    #endregion
 }
