@@ -44,7 +44,7 @@ public class CameraMovement : MonoBehaviour
         {
             
             Vector3 _cameraCentre = this.transform.position;
-            ShaderTextureTilingController.Instance.loopThroughViewport(ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item1, ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item2);
+            ShaderTextureTilingController.Instance.loopThroughViewport(GetCameraCentralTile(_cameraCentre).Item1, GetCameraCentralTile(_cameraCentre).Item2);
         }
         
         if(Input.touchCount ==2 )
@@ -70,7 +70,7 @@ public class CameraMovement : MonoBehaviour
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - increment, zoomOutMin, zoomOutMax);
         updateViewportPoints();
         Vector3 _cameraCentre = this.transform.position;
-        ShaderTextureTilingController.Instance.loopThroughViewport(ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item1, ShaderTextureTilingController.Instance.CalculateTileNumber(_cameraCentre).Item2);
+        ShaderTextureTilingController.Instance.loopThroughViewport(GetCameraCentralTile(_cameraCentre).Item1, GetCameraCentralTile(_cameraCentre).Item2);
     }
 
     void updateViewportPoints()
@@ -88,6 +88,12 @@ public class CameraMovement : MonoBehaviour
     {
         ArcGISPoint CameraGISPos = this.GetComponent<ArcGISPoint>();
         return CameraGISPos;
+    }
+
+    public ValueTuple<int, int> GetCameraCentralTile(Vector3 CentralPoint)
+    {
+        ValueTuple<int, int> centralTile = ShaderTextureTilingController.Instance.CalculateTileNumber(CentralPoint);
+        return centralTile;
     }
     #endregion
 }

@@ -459,7 +459,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderTextureTilePrefab: {fileID: 2437065681034557740, guid: 3f2ab7a73143e9f4684d56acf46c0b01, type: 3}
   _greyImageBasedRef: {fileID: 0}
-  BasedRefPos: {x: 0, y: 0, z: 0}
+  BasedRefBottomLeftPos: {x: 0, y: 0, z: 0}
 --- !u!1 &918490617
 GameObject:
   m_ObjectHideFlags: 0

@@ -143,6 +143,7 @@ public class LocationService : MonoBehaviour
             if (!_visitedPosList.Contains(_gpsPosition,comparer))
             {
                 _visitedPosList.Add(_gpsPosition);
+                
                 _pointInUV = _gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
                 _shaderImage.updatePositionInTexture(_pointInUV);
                 if(_lastPosition == null)

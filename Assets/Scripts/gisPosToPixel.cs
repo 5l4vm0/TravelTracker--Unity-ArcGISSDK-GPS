@@ -6,7 +6,7 @@ using Esri.ArcGISMapsSDK.Components;
 
 public class GisPosToPixel : MonoBehaviour
 {
-
+    [SerializeField] private ArcGISMapComponent mapRef;
     [SerializeField] private GameObject V0_0;
     [SerializeField] private ArcGISPoint v0_0GIS;
     [SerializeField] private GameObject V1_0;
@@ -30,9 +30,24 @@ public class GisPosToPixel : MonoBehaviour
 
     public void Start()
     {
-        v0_0GIS = V0_0.GetComponent<ArcGISLocationComponent>().Position;
-        v1_0GIS = V1_0.GetComponent<ArcGISLocationComponent>().Position;
-        v0_1GIS = V0_1.GetComponent<ArcGISLocationComponent>().Position;
+        mapRef = GameObject.Find("ArcGISMap").GetComponent<ArcGISMapComponent>();
+
+        //Convert unity global position to geographic position by mapRef.EngineToGeographic, then project it to coordinate WGS84 so it shows as latitude and longtitude
+        v0_0GIS = (ArcGISPoint)ArcGISGeometryEngine.Project(mapRef.EngineToGeographic(new Vector3(transform.position.x - 1500, 0, transform.position.z - 1500)), ArcGISSpatialReference.WGS84());
+        v1_0GIS = (ArcGISPoint)ArcGISGeometryEngine.Project(mapRef.EngineToGeographic(new Vector3(transform.position.x + 1500, 0, transform.position.z - 1500)), ArcGISSpatialReference.WGS84());
+        v0_1GIS = (ArcGISPoint)ArcGISGeometryEngine.Project(mapRef.EngineToGeographic(new Vector3(transform.position.x - 1500, 0, transform.position.z + 1500)), ArcGISSpatialReference.WGS84());
+
+        //Enable ArcGisLocationComponent so the object is placed at the right place. Not sure why but when it first spawns, ArcGisLocationComponent is disabled
+        V0_0.GetComponent<ArcGISLocationComponent>().enabled = true;
+        V1_0.GetComponent<ArcGISLocationComponent>().enabled = true;
+        V0_1.GetComponent<ArcGISLocationComponent>().enabled = true;
+
+        //Assign gameobject to the geographic position
+        V0_0.GetComponent<ArcGISLocationComponent>().Position = v0_0GIS;
+        V1_0.GetComponent<ArcGISLocationComponent>().Position = v1_0GIS;
+        V0_1.GetComponent<ArcGISLocationComponent>().Position = v0_1GIS;
+
+
     }
 
     public Vector2 gisPosToPixelMethod(ArcGISPoint point)
@@ -43,3 +58,25 @@ public class GisPosToPixel : MonoBehaviour
     }
 
 }
+
+
+//public class Test : MonoBehaviour
+//{
+//    public ArcGISMapComponent mapRef;
+//    public GameObject prefab;
+//    public Vector3 position = new Vector3(10, 0, 0);
+
+//    // Start is called before the first frame update
+//    void Start()
+//    {
+
+//        Instantiate(prefab, Vector3.zero, new Quaternion(0, 0, 0, 0), this.transform);
+//        //double3 worldPosition = math.inverse(mapRef.WorldMatrix).HomogeneousTransformPoint(position.ToDouble3());
+//        //ArcGISPoint arcgispoint = mapRef.View.WorldToGeographic(worldPosition);
+//        ArcGISPoint arcgispoint = mapRef.EngineToGeographic(position);
+
+//        ArcGISPoint gispoint = (ArcGISPoint)ArcGISGeometryEngine.Project(arcgispoint, ArcGISSpatialReference.WGS84());
+//        prefab.GetComponent<ArcGISLocationComponent>().Position = gispoint;
+//        Debug.Log($"position {gispoint.X}, {gispoint.Y}");
+//    }
+//}
