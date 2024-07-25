@@ -1,13 +1,17 @@
 using Esri.GameEngine.Geometry;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GISPosShader : MonoBehaviour
 {
-    public Material material;  // Assign the material using this shader in the inspector
     public Texture2D maskTexture; // Mask texture to store alpha changes
+    [SerializeField] private Vector2 tileNumber;
 
     void Start()
     {
+        Material materialInstance = new Material(Shader.Find("Custom/GrayFilterWithAlphaOnClick"));
+        materialInstance.name = $"materialInstance[{tileNumber.x},{tileNumber.y}]";
+        
         // Initialize the mask texture with white color (alpha = 1)
         maskTexture = new Texture2D(1000, 1000, TextureFormat.RFloat, false);
         for (int y = 0; y < maskTexture.height; y++)
@@ -20,7 +24,8 @@ public class GISPosShader : MonoBehaviour
         maskTexture.Apply();
 
         // Assign the mask texture to the material
-        material.SetTexture("_MaskTex", maskTexture);
+        materialInstance.SetTexture("_MaskTex", maskTexture);
+        this.GetComponent<Image>().material = materialInstance;
 
         // Calculate and set the aspect ratio
         //float aspectRatio = (float)Screen.width / Screen.height;
@@ -49,6 +54,11 @@ public class GISPosShader : MonoBehaviour
         //    }
         //    maskTexture.Apply();
         //}
+    }
+
+    public void AssignTileNumber(int tileNumX, int tileNumY)
+    {
+        tileNumber = new Vector2(tileNumX, tileNumY);
     }
 
     public void updatePositionInTexture(Vector2 pointInUV)

@@ -5,7 +5,7 @@ Shader "Custom/GrayFilterWithAlphaOnClick"
         _MainTex("Texture", 2D) = "white" {}
         _MaskTex("Mask Texture", 2D) = "white"{}
         _FilterStrength("Filter Strength", Range(0, 1)) = 1.0
-        _Alpha("Alpha", Range(0, 1)) = 1.0
+        _Alpha("Alpha", Range(0, 1)) = 0.5
 
     }
         SubShader
@@ -19,6 +19,7 @@ Shader "Custom/GrayFilterWithAlphaOnClick"
                 CGPROGRAM
                 #pragma vertex vert
                 #pragma fragment frag
+                #pragma multi_compile
 
                 #include "UnityCG.cginc"
 

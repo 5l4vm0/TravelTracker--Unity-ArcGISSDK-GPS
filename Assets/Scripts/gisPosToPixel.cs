@@ -30,7 +30,20 @@ public class GisPosToPixel : MonoBehaviour
 
     public void Start()
     {
+        StartCoroutine(InitialiseGisPos());
+    }
+
+    private IEnumerator InitialiseGisPos()
+    {
         mapRef = GameObject.Find("ArcGISMap").GetComponent<ArcGISMapComponent>();
+
+        while (!mapRef.HasSpatialReference())
+        {
+            //Debug.Log("Waiting for ArcGISMapComponent to have a valid spatial reference...");
+            yield return null;
+        }
+
+        Debug.Log("ArcGISMapComponent initialized. Proceeding with GIS position conversion.");
 
         //Convert unity global position to geographic position by mapRef.EngineToGeographic, then project it to coordinate WGS84 so it shows as latitude and longtitude
         v0_0GIS = (ArcGISPoint)ArcGISGeometryEngine.Project(mapRef.EngineToGeographic(new Vector3(transform.position.x - 1500, 0, transform.position.z - 1500)), ArcGISSpatialReference.WGS84());
@@ -46,8 +59,6 @@ public class GisPosToPixel : MonoBehaviour
         V0_0.GetComponent<ArcGISLocationComponent>().Position = v0_0GIS;
         V1_0.GetComponent<ArcGISLocationComponent>().Position = v1_0GIS;
         V0_1.GetComponent<ArcGISLocationComponent>().Position = v0_1GIS;
-
-
     }
 
     public Vector2 gisPosToPixelMethod(ArcGISPoint point)

@@ -35,8 +35,8 @@ public class LocationService : MonoBehaviour
             foreach (ArcGISPoint point in _savedPos)
             {
                 _allVisitedPos.Append("pointX" + point.X + " pointY" + point.Y + "/");
-                _pointInUV = _gisPostToPixel.gisPosToPixelMethod(point);
-                _shaderImage.updatePositionInTexture(_pointInUV);
+                //_pointInUV = _gisPostToPixel.gisPosToPixelMethod(point);
+                //_shaderImage.updatePositionInTexture(_pointInUV);
             }
             Debug.Log("Loaded visited positions" + _allVisitedPos.ToString());
             _allVisitedPos.Clear();
@@ -143,10 +143,18 @@ public class LocationService : MonoBehaviour
             if (!_visitedPosList.Contains(_gpsPosition,comparer))
             {
                 _visitedPosList.Add(_gpsPosition);
-                
+
+                while (!_mapRef.HasSpatialReference())
+                {
+                    //Debug.Log("Waiting for ArcGISMapComponent to have a valid spatial reference...");
+                    yield return null;
+                }
+                _gisPostToPixel = ShaderTextureTilingController.Instance.tiles[new Vector2(CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1, CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item2)].transform.GetChild(0).GetComponent<GisPosToPixel>();
                 _pointInUV = _gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
+                _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
                 _shaderImage.updatePositionInTexture(_pointInUV);
-                if(_lastPosition == null)
+                
+                if (_lastPosition == null)
                 {
                     _lastPosition = _gpsPosition;
                 }
@@ -185,6 +193,7 @@ public class LocationService : MonoBehaviour
 
     void SetMapCentre(ArcGISPoint point)
     {
+        Debug.Log($"setting map centre:{point}");
         // update map geographic centre position based on GPS position
         var newExtent = _mapRef.Extent;
         newExtent.GeographicCenter = point;

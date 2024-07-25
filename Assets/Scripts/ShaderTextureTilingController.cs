@@ -13,7 +13,7 @@ public class ShaderTextureTilingController : MonoBehaviour
     public GameObject ShaderTextureTilePrefab;
     [SerializeField] private GisPosToPixel _greyImageBasedRef;
     public Vector3 BasedRefBottomLeftPos;
-    private Dictionary<Vector2, bool> tiles = new Dictionary<Vector2, bool>();
+    public Dictionary<Vector2, GameObject> tiles = new Dictionary<Vector2, GameObject>();
 
     private void Start()
     {
@@ -24,10 +24,10 @@ public class ShaderTextureTilingController : MonoBehaviour
         {
             for (int y = 0; y < (CameraMovement.Instance.TopLeft.z - CameraMovement.Instance.BottomLeft.z) / 3000; y++)
             {
-                AddShaderTexture(x, y);
+                
                 if(!tiles.ContainsKey(new Vector2(x, y)))
                 {
-                    tiles.Add(new Vector2(x, y), true);
+                    AddShaderTexture(x, y);
                 }
             }
         }
@@ -40,17 +40,19 @@ public class ShaderTextureTilingController : MonoBehaviour
         return (tileX, tileY);
     }
 
-    public void AddShaderTexture(int TileNumberX, int TileNumberY)
+    public GameObject AddShaderTexture(int TileNumberX, int TileNumberY)
     {
-        if (tiles.ContainsKey(new Vector2(TileNumberX,TileNumberY)))
-        {
-            tiles[new Vector2(TileNumberX, TileNumberY)] = true;
-        }
-        else
+        if (!tiles.ContainsKey(new Vector2(TileNumberX,TileNumberY)))
         {
             GameObject newTile = Instantiate(ShaderTextureTilePrefab, new Vector3(BasedRefBottomLeftPos.x + 1500 + 3000 * TileNumberX, 25, BasedRefBottomLeftPos.z + 1500 + 3000 * TileNumberY), new Quaternion(0, 0, 0, 0), this.transform);
             newTile.name = $"ShaderTextureTilePrefab [{TileNumberX},{TileNumberY}]";
-            tiles.Add(new Vector2(TileNumberX, TileNumberY), true);
+            newTile.transform.GetChild(0).GetComponent<GISPosShader>().AssignTileNumber(TileNumberX, TileNumberY);
+            tiles.Add(new Vector2(TileNumberX, TileNumberY), newTile);
+            return newTile;
+        }
+        else
+        {
+            return tiles[new Vector2(TileNumberX, TileNumberY)];
         }
     }
 
