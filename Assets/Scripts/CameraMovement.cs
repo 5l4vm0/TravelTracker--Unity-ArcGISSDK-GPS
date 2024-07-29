@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Esri.GameEngine.Geometry;
 using System;
+using UnityEngine.EventSystems;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -31,24 +32,38 @@ public class CameraMovement : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
+            if(EventSystem.current.IsPointerOverGameObject()) //To prevent interact with map when there's UI
+            {
+                return;
+            }
             _touchStart = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
         if(Input.GetMouseButton(0))
         {
+            if (EventSystem.current.IsPointerOverGameObject()) 
+            {
+                return;
+            }
             Vector3 direction = _touchStart - Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Camera.main.transform.position += direction;
             _locationSeerviceRef.CamInCentre = false;
         }
         if(Input.GetMouseButtonUp(0))
         {
-            
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+            LocationService.Instance.CameraNotInCentreBehaviour();
             Vector3 _cameraCentre = this.transform.position;
             ShaderTextureTilingController.Instance.loopThroughViewport(GetCameraCentralTile(_cameraCentre).Item1, GetCameraCentralTile(_cameraCentre).Item2);
         }
         
         if(Input.touchCount ==2 )
         {
+            
+            LocationService.Instance.CameraNotInCentreBehaviour();
             Touch touchZero = Input.GetTouch(0);
             Touch touchOne = Input.GetTouch(1);
 

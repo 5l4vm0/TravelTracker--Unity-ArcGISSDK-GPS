@@ -23,9 +23,14 @@ public class LocationService : MonoBehaviour
     private ArcGISPoint _lastPosition;
     private Vector2 _lastPointInUV;
     public bool CamInCentre = true;
+    [SerializeField] private ButtonBehaviour _reCentreButton;
+
+    //Singleton
+    public static LocationService Instance;
 
     private void Start()
     {
+        Instance = this;
         StartCoroutine(LocationCoroutine());
         _allVisitedPos = new StringBuilder();
         _savedPos = SaveSystem.LoadPositions();
@@ -132,8 +137,8 @@ public class LocationService : MonoBehaviour
             }
             _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,100, _gpsPosition.SpatialReference);
 
-
-            SetMapCentre(_gpsPosition);
+            //Disable Extent so now shouldn't need this part of code cause map will update itself and not show the boundary
+            //SetMapCentre(_cameraRef.Position);
 
 
             //store gpsPosition into _visitedPosArray to if the gps position has not existed in the list yet
@@ -193,10 +198,23 @@ public class LocationService : MonoBehaviour
 
     void SetMapCentre(ArcGISPoint point)
     {
-        Debug.Log($"setting map centre:{point}");
+        Debug.Log($"setting map centre:{point.X},{point.Y}");
         // update map geographic centre position based on GPS position
         var newExtent = _mapRef.Extent;
         newExtent.GeographicCenter = point;
         _mapRef.Extent = newExtent;
+    }
+
+    public void CameraMoveBackToGISCentre()
+    {
+        _cameraRef.Position = _gpsPosition;
+        _reCentreButton.IconBackToDefault();
+        CamInCentre = true;
+    }
+
+    public void CameraNotInCentreBehaviour()
+    {
+        _reCentreButton.SwapIcon();
+        CamInCentre = false;
     }
 }
