@@ -28,7 +28,7 @@ public class GisPosToPixel : MonoBehaviour
         get { return v0_1GIS; }
     }
 
-    public void Start()
+    public void Awake()
     {
         StartCoroutine(InitialiseGisPos());
     }
@@ -43,7 +43,6 @@ public class GisPosToPixel : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("ArcGISMapComponent initialized. Proceeding with GIS position conversion.");
 
         //Convert unity global position to geographic position by mapRef.EngineToGeographic, then project it to coordinate WGS84 so it shows as latitude and longtitude
         v0_0GIS = (ArcGISPoint)ArcGISGeometryEngine.Project(mapRef.EngineToGeographic(new Vector3(transform.position.x - 1500, 0, transform.position.z - 1500)), ArcGISSpatialReference.WGS84());

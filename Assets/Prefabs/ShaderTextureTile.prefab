@@ -323,9 +323,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1532832c6d24734a9d0d0fa0def30d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  materialBase: {fileID: 0}
   maskTexture: {fileID: 0}
   tileNumber: {x: 0, y: 0}
+  _gisPosToPixelRef: {fileID: 1015625721709922423}
 --- !u!114 &1910252831664526629
 MonoBehaviour:
   m_ObjectHideFlags: 0

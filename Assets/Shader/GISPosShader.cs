@@ -6,12 +6,12 @@ public class GISPosShader : MonoBehaviour
 {
     public Texture2D maskTexture; // Mask texture to store alpha changes
     [SerializeField] private Vector2 tileNumber;
+    [SerializeField] private GisPosToPixel _gisPosToPixelRef;
 
     void Start()
     {
         Material materialInstance = new Material(Shader.Find("Custom/GrayFilterWithAlphaOnClick"));
         materialInstance.name = $"materialInstance[{tileNumber.x},{tileNumber.y}]";
-        
         // Initialize the mask texture with white color (alpha = 1)
         maskTexture = new Texture2D(1000, 1000, TextureFormat.RFloat, false);
         for (int y = 0; y < maskTexture.height; y++)
@@ -26,6 +26,19 @@ public class GISPosShader : MonoBehaviour
         // Assign the mask texture to the material
         materialInstance.SetTexture("_MaskTex", maskTexture);
         this.GetComponent<Image>().material = materialInstance;
+        
+        //Draw the saved pos 
+        if (LocationService.Instance.SavedPos != null)
+        { 
+            foreach (ArcGISPoint point in LocationService.Instance.SavedPos)
+            {
+                if (_gisPosToPixelRef.V0_0GIS.X <= point.X && point.X <= _gisPosToPixelRef.V1_0GIS.X && _gisPosToPixelRef.V0_0GIS.Y <= point.Y && point.Y <= _gisPosToPixelRef.V0_1GIS.Y)
+                {
+                    Vector2 _pointInUV = _gisPosToPixelRef.gisPosToPixelMethod(point);
+                    updatePositionInTexture(_pointInUV);
+                }
+            }
+        }
 
         // Calculate and set the aspect ratio
         //float aspectRatio = (float)Screen.width / Screen.height;

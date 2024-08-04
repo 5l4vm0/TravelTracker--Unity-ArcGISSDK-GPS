@@ -16,7 +16,7 @@ public class LocationService : MonoBehaviour
     private List<ArcGISPoint> _visitedPosList = new List<ArcGISPoint>();
     private float _elapsedTime;
     private StringBuilder _allVisitedPos;
-    private List<ArcGISPoint> _savedPos;
+    public List<ArcGISPoint> SavedPos;
     [SerializeField] private GisPosToPixel _gisPostToPixel;
     [SerializeField] private GISPosShader _shaderImage;
     private Vector2 _pointInUV;
@@ -33,11 +33,11 @@ public class LocationService : MonoBehaviour
         Instance = this;
         StartCoroutine(LocationCoroutine());
         _allVisitedPos = new StringBuilder();
-        _savedPos = SaveSystem.LoadPositions();
+        SavedPos = SaveSystem.LoadPositions();
         
-        if(_savedPos != null)
+        if(SavedPos != null)
         {
-            foreach (ArcGISPoint point in _savedPos)
+            foreach (ArcGISPoint point in SavedPos)
             {
                 _allVisitedPos.Append("pointX" + point.X + " pointY" + point.Y + "/");
                 //_pointInUV = _gisPostToPixel.gisPosToPixelMethod(point);
@@ -135,7 +135,7 @@ public class LocationService : MonoBehaviour
             {
                 _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
             }
-            _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,100, _gpsPosition.SpatialReference);
+            _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,50, _gpsPosition.SpatialReference);
 
             //Disable Extent so now shouldn't need this part of code cause map will update itself and not show the boundary
             //SetMapCentre(_cameraRef.Position);
