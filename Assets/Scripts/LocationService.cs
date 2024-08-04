@@ -205,9 +205,9 @@ public class LocationService : MonoBehaviour
         _mapRef.Extent = newExtent;
     }
 
-    public void CameraMoveBackToGISCentre()
+    public void CameraMoveBackToPlayerDotCentre()
     {
-        _cameraRef.Position = _gpsPosition;
+        _cameraRef.gameObject.transform.position = new Vector3(_playerDotRef.gameObject.transform.position.x, _cameraRef.gameObject.transform.position.y, _playerDotRef.gameObject.transform.position.z);
         _reCentreButton.IconBackToDefault();
         CamInCentre = true;
     }

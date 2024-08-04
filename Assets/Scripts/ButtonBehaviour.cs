@@ -19,13 +19,11 @@ public class ButtonBehaviour : MonoBehaviour
     {
         DefaultIcon.enabled = true;
         SwapedIcon.enabled = false;
-        Debug.Log("button back to default");
     }
 
     public void SwapIcon()
     {
         DefaultIcon.enabled = false;
         SwapedIcon.enabled = true;
-        Debug.Log("button swapped");
     }
 }

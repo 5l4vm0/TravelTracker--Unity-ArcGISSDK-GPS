@@ -218,8 +218,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 239936396}
-  m_LocalRotation: {x: 0.0000014603138, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -535.0001}
+  m_LocalRotation: {x: 0.000031113625, y: 0.000048757753, z: -0.000061306855, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -534.95935}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -227,7 +227,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -999, y: 605}
+  m_AnchoredPosition: {x: -622.9959, y: 376.36057}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &239936398
@@ -303,15 +303,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IsInitialized: 1
   m_LocalPosition:
-    x: -25232.02863129693
-    y: 560.0018310546875
-    z: 6713229.721717714
+    x: 3977500.058703737
+    y: 4969966.44258568
+    z: -15735.146315450373
   m_LocalRotation:
     value:
-      x: 0.70710677
-      y: 0
-      z: 0
-      w: 0.70710677
+      x: 0.30790007
+      y: -0.6355837
+      z: 0.3066844
+      w: 0.63810307
   m_LocalScale:
     x: 1
     y: 1
@@ -665,7 +665,7 @@ MonoBehaviour:
     y: 51.5134507
     z: 0
     SRWkid: 4326
-  mapType: 1
+  mapType: 0
   editorModeEnabled: 1
   dataFetchWithSceneView: 1
   rebaseWithSceneView: 0
@@ -688,15 +688,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_LocalPosition:
-    x: -24233.02863129693
-    y: 0
-    z: 6712624.723182556
+    x: 3977448.542070984
+    y: 4969293.911388893
+    z: -15111.950117933691
   m_LocalRotation:
     value:
-      x: 0
-      y: 0
-      z: 0
-      w: 1
+      x: -0.23349042
+      y: -0.6663297
+      z: -0.232605
+      w: 0.66886616
 --- !u!4 &918490620
 Transform:
   m_ObjectHideFlags: 0
@@ -928,6 +928,7 @@ MonoBehaviour:
     z: 0
     SRWkid: 4326
   _mapRef: {fileID: 918490618}
+  SavedPos: []
   _gisPostToPixel: {fileID: 0}
   _shaderImage: {fileID: 0}
   CamInCentre: 1
@@ -976,8 +977,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1527370077}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.70710677, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 200, z: -0.0000000037252903}
+  m_LocalRotation: {x: 0.7071068, y: 1.6013169e-10, z: 1.6013112e-10, w: 0.70710677}
+  m_LocalPosition: {x: -0.0000030397223, y: 200, z: -0.000007820461}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1088,15 +1089,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IsInitialized: 1
   m_LocalPosition:
-    x: -24233.02863129693
-    y: 200
-    z: 6712624.7231825525
+    x: 3977573.0073516653
+    y: 4969450.462244131
+    z: -15112.423012326459
   m_LocalRotation:
     value:
-      x: 0.70710677
-      y: 0
-      z: 0
-      w: 0.70710677
+      x: 0.30785716
+      y: -0.63564277
+      z: 0.3066897
+      w: 0.6380624
   m_LocalScale:
     x: 1
     y: 1
@@ -1207,7 +1208,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1275409333}
         m_TargetAssemblyTypeName: LocationService, Assembly-CSharp
-        m_MethodName: CameraMoveBackToGISCentre
+        m_MethodName: CameraMoveBackToPlayerDotCentre
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
