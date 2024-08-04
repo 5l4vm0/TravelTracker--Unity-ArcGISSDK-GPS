@@ -135,7 +135,7 @@ public class LocationService : MonoBehaviour
             {
                 _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
             }
-            _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,50, _gpsPosition.SpatialReference);
+            _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,0.1, _gpsPosition.SpatialReference);
 
             //Disable Extent so now shouldn't need this part of code cause map will update itself and not show the boundary
             //SetMapCentre(_cameraRef.Position);

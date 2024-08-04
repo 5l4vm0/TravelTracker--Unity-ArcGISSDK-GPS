@@ -218,8 +218,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 239936396}
-  m_LocalRotation: {x: 0.000031113625, y: 0.000048757753, z: -0.000061306855, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -534.95935}
+  m_LocalRotation: {x: 0.00003105402, y: 0.00004875729, z: -0.00006114329, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 24.942566}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -227,7 +227,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -622.9959, y: 376.36057}
+  m_AnchoredPosition: {x: -622.9959, y: 376.4}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &239936398
@@ -281,12 +281,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   position:
-    x: -0.226663169688354
-    y: 51.51683281484654
-    z: 560.0018310546875
+    x: -0.22666395531273115
+    y: 51.516833481607975
+    z: 0.1
     SRWkid: 4326
   rotation:
-    Heading: 0
+    Heading: 359.99998208160656
     Pitch: 0
     Roll: 0
 --- !u!114 &239936401
@@ -303,15 +303,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IsInitialized: 1
   m_LocalPosition:
-    x: 3977500.058703737
-    y: 4969966.44258568
-    z: -15735.146315450373
+    x: 3977151.584808598
+    y: 4969528.20262833
+    z: -15733.822273536929
   m_LocalRotation:
     value:
-      x: 0.30790007
-      y: -0.6355837
-      z: 0.3066844
-      w: 0.63810307
+      x: -0.30789986
+      y: 0.6355838
+      z: -0.3066844
+      w: -0.63810307
   m_LocalScale:
     x: 1
     y: 1
