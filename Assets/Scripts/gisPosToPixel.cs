@@ -13,6 +13,7 @@ public class GisPosToPixel : MonoBehaviour
     [SerializeField] private ArcGISPoint v1_0GIS;
     [SerializeField] private GameObject V0_1;
     [SerializeField] private ArcGISPoint v0_1GIS;
+    [SerializeField] private Transform _origin;
 
     //properties
     public ArcGISPoint V0_0GIS 
@@ -67,6 +68,12 @@ public class GisPosToPixel : MonoBehaviour
         return new Vector2(xInUV, yInUV);
     }
 
+    public Vector2 gisPosToPixelMethodOffline(Vector3 point)
+    {
+        float xInUV = (float)((point.x - _origin.transform.position.x) / 3000);
+        float yInUV = (float)((point.z - _origin.transform.position.z) / 3000);
+        return new Vector2(xInUV, yInUV);
+    }
 }
 
 

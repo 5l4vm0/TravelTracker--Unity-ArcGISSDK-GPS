@@ -6,6 +6,7 @@ using Esri.ArcGISMapsSDK.SDK.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine.UI;
 
 public class LocationService : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class LocationService : MonoBehaviour
     private Vector2 _lastPointInUV;
     public bool CamInCentre = true;
     [SerializeField] private ButtonBehaviour _reCentreButton;
+    [SerializeField] private Image testUIGPS;
 
     //Singleton
     public static LocationService Instance;
@@ -106,68 +108,90 @@ public class LocationService : MonoBehaviour
             yield break;
         }
 
-        // Connection has failed
-        if (UnityEngine.Input.location.status != LocationServiceStatus.Running)
+        
+        while(true)
         {
-            // TODO Failure
-            Debug.LogFormat("Unable to determine device location. Failed with status {0}", UnityEngine.Input.location.status);
-            yield break;
-        }
-        while(UnityEngine.Input.location.status == LocationServiceStatus.Running)
-        {
-            //Debug.LogFormat("Location service live. status {0}", UnityEngine.Input.location.status);
-            // Access granted and location value could be retrieved
-            //Debug.LogFormat("Location: "
-            //    + UnityEngine.Input.location.lastData.latitude + " "
-            //    + UnityEngine.Input.location.lastData.longitude + " "
-            //    + UnityEngine.Input.location.lastData.altitude + " "
-            //    + UnityEngine.Input.location.lastData.horizontalAccuracy + " "
-            //    + UnityEngine.Input.location.lastData.timestamp);
-
-            
-            var _latitude = UnityEngine.Input.location.lastData.latitude;
-            var _longitude = UnityEngine.Input.location.lastData.longitude ;
-            var _altitude = UnityEngine.Input.location.lastData.altitude;
-
-            //Get round up to 5 decimal points
-            _gpsPosition = new ArcGISPoint(Mathf.Round(_longitude *100000f)/100000f, Mathf.Round(_latitude*100000f)/100000f, Mathf.Round(_altitude*100000f)/100000f, ArcGISSpatialReference.WGS84());
-            if(CamInCentre)
+            // Connection has failed
+            if (UnityEngine.Input.location.status != LocationServiceStatus.Running)
             {
-                _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
+                // TODO Failure
+                Debug.LogFormat("Unable to determine device location. Failed with status {0}", UnityEngine.Input.location.status);
+                testUIGPS.color = Color.red;
+                //yield break;
             }
-            _playerDotRef.Position = new ArcGISPoint( _gpsPosition.X, _gpsPosition.Y,0.1, _gpsPosition.SpatialReference);
-
-            //Disable Extent so now shouldn't need this part of code cause map will update itself and not show the boundary
-            //SetMapCentre(_cameraRef.Position);
 
 
-            //store gpsPosition into _visitedPosArray to if the gps position has not existed in the list yet
-            //In this case, we can have a list to record all gps position data that we have been visited
-            //Create a new comparer so Contains function is comparing the X and Y values
-            ArcGISPointEqualityComparer comparer = new ArcGISPointEqualityComparer();
-            if (!_visitedPosList.Contains(_gpsPosition,comparer))
+            if (UnityEngine.Input.location.status == LocationServiceStatus.Running)
             {
-                _visitedPosList.Add(_gpsPosition);
+                //Debug.LogFormat("Location service live. status {0}", UnityEngine.Input.location.status);
+                // Access granted and location value could be retrieved
+                //Debug.LogFormat("Location: "
+                //    + UnityEngine.Input.location.lastData.latitude + " "
+                //    + UnityEngine.Input.location.lastData.longitude + " "
+                //    + UnityEngine.Input.location.lastData.altitude + " "
+                //    + UnityEngine.Input.location.lastData.horizontalAccuracy + " "
+                //    + UnityEngine.Input.location.lastData.timestamp);
 
-                while (!_mapRef.HasSpatialReference())
+                testUIGPS.color = Color.green;
+                var _latitude = UnityEngine.Input.location.lastData.latitude;
+                var _longitude = UnityEngine.Input.location.lastData.longitude;
+                var _altitude = UnityEngine.Input.location.lastData.altitude;
+
+                //Get round up to 5 decimal points
+                _gpsPosition = new ArcGISPoint(Mathf.Round(_longitude * 100000f) / 100000f, Mathf.Round(_latitude * 100000f) / 100000f, Mathf.Round(_altitude * 100000f) / 100000f, ArcGISSpatialReference.WGS84());
+                if (CamInCentre)
                 {
-                    //Debug.Log("Waiting for ArcGISMapComponent to have a valid spatial reference...");
-                    yield return null;
+                    _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
                 }
-                _gisPostToPixel = ShaderTextureTilingController.Instance.tiles[new Vector2(CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1, CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item2)].transform.GetChild(0).GetComponent<GisPosToPixel>();
-                _pointInUV = _gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
-                _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
-                _shaderImage.updatePositionInTexture(_pointInUV);
-                
-                if (_lastPosition == null)
+
+                if (!_mapRef.HasSpatialReference())
                 {
+                    Debug.Log("no spatial refernece");
+                    _playerDotRef.gameObject.transform.position = new Vector3(_mapRef.GeographicToEngine(_gpsPosition).x, _mapRef.GeographicToEngine(_gpsPosition).y, 0.1f);
+                }
+                else
+                {
+                    _playerDotRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 0.1, _gpsPosition.SpatialReference);
+                }
+                //Disable Extent so now shouldn't need this part of code cause map will update itself and not show the boundary
+                //SetMapCentre(_cameraRef.Position);
+
+
+                //store gpsPosition into _visitedPosArray to if the gps position has not existed in the list yet
+                //In this case, we can have a list to record all gps position data that we have been visited
+                //Create a new comparer so Contains function is comparing the X and Y values
+                ArcGISPointEqualityComparer comparer = new ArcGISPointEqualityComparer();
+                if (!_visitedPosList.Contains(_gpsPosition, comparer))
+                {
+                    _visitedPosList.Add(_gpsPosition);
+
+                    if (!_mapRef.HasSpatialReference())
+                    {
+                        Debug.Log("Waiting for ArcGISMapComponent to have a valid spatial reference...");
+                        _gisPostToPixel = ShaderTextureTilingController.Instance.tiles[new Vector2(CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1, CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item2)].transform.GetChild(0).GetComponent<GisPosToPixel>();
+                        _pointInUV = _gisPostToPixel.gisPosToPixelMethodOffline(_mapRef.GeographicToEngine(_gpsPosition));
+                        _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
+                        _shaderImage.updatePositionInTexture(_pointInUV);
+                        //yield return null;
+                        
+                    }
+                    _gisPostToPixel = ShaderTextureTilingController.Instance.tiles[new Vector2(CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1, CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item2)].transform.GetChild(0).GetComponent<GisPosToPixel>();
+                    _pointInUV = _gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
+                    _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
+                    _shaderImage.updatePositionInTexture(_pointInUV);
+
+                    if (_lastPosition == null)
+                    {
+                        _lastPosition = _gpsPosition;
+                    }
+                    _lastPointInUV = _gisPostToPixel.gisPosToPixelMethod(_lastPosition);
+                    _shaderImage.updateLineInTexture(_pointInUV, _lastPointInUV);
                     _lastPosition = _gpsPosition;
                 }
-                _lastPointInUV = _gisPostToPixel.gisPosToPixelMethod(_lastPosition);
-                _shaderImage.updateLineInTexture(_pointInUV, _lastPointInUV);
-                _lastPosition = _gpsPosition;
+
+                //yield return new WaitForSecondsRealtime(3);
             }
-            
+
             yield return new WaitForSecondsRealtime(3);
         }
 
