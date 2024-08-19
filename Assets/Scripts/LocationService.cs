@@ -26,6 +26,8 @@ public class LocationService : MonoBehaviour
     public bool CamInCentre = true;
     [SerializeField] private ButtonBehaviour _reCentreButton;
     [SerializeField] private Image testUIGPS;
+    [SerializeField] private Image testUIWifi;
+    private bool isFirstTimeReload = true;
     private float _latitude;
     private float _longitude;
     private float _altitude;
@@ -37,6 +39,8 @@ public class LocationService : MonoBehaviour
     private void Start()
     {
         Instance = this;
+        
+        
         StartCoroutine(LocationCoroutine());
         _allVisitedPos = new StringBuilder();
         SavedPos = SaveSystem.LoadPositions();
@@ -125,8 +129,10 @@ public class LocationService : MonoBehaviour
             UnityEngine.Input.location.Start(25f, 0.1f);
         }
 
-        while(true)
+        
+        while (true)
         {
+            CheckInternet();
             if (UnityEngine.Input.location.status == LocationServiceStatus.Running)
             {
                 GetGPS();
@@ -223,14 +229,17 @@ public class LocationService : MonoBehaviour
                 _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
                 _shaderImage.updatePositionInTexture(_pointInUV);
 
-                //Draw line between _lastPosition and current gps position (Designed for losting gps for short period of time)
-                if (_lastPosition == null)
+                if(_gpsNotActiveTime < 15f)
                 {
+                    //Draw line between _lastPosition and current gps position (Designed for losting gps for short period of time)
+                    if (_lastPosition == null)
+                    {
+                        _lastPosition = _gpsPosition;
+                    }
+                    _lastPointInUV = _gisPostToPixel.gisPosToPixelMethod(_lastPosition);
+                    _shaderImage.updateLineInTexture(_pointInUV, _lastPointInUV);
                     _lastPosition = _gpsPosition;
                 }
-                _lastPointInUV = _gisPostToPixel.gisPosToPixelMethod(_lastPosition);
-                _shaderImage.updateLineInTexture(_pointInUV, _lastPointInUV);
-                _lastPosition = _gpsPosition;
             }
         }
         else  //Lost GPS 
@@ -241,6 +250,25 @@ public class LocationService : MonoBehaviour
         if (_gpsNotActiveTime > 15f) //Lost GPS for more than 15f
         {
             testUIGPS.color = Color.red;
+        }
+    }
+
+    private void CheckInternet()
+    {
+        if (Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            testUIWifi.color = Color.red;
+            
+        }
+        else if (Application.internetReachability != NetworkReachability.NotReachable)
+        {
+            testUIWifi.color = Color.green;
+            if (!_mapRef.HasSpatialReference() && isFirstTimeReload)
+            {
+                Debug.Log("try initialising map");
+                StartCoroutine(ReInitialiseMap());
+                isFirstTimeReload = false;
+            }
         }
     }
 
@@ -264,6 +292,18 @@ public class LocationService : MonoBehaviour
     {
         _reCentreButton.SwapIcon();
         CamInCentre = false;
+    }
+
+    /// <summary>
+    /// ReInitialiseMap by disabling and enabling ArcGisMap component
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator ReInitialiseMap()
+    {
+        yield return new WaitForSecondsRealtime(1);
+        _mapRef.enabled = false;
+        yield return new WaitForSecondsRealtime(1);
+        _mapRef.enabled = true;
     }
 
 }
