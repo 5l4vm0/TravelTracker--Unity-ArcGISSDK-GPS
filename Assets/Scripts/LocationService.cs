@@ -218,9 +218,9 @@ public class LocationService : MonoBehaviour
                 {
                     Debug.Log("Waiting for ArcGISMapComponent to have a valid spatial reference...");
                     _gisPostToPixel = ShaderTextureTilingController.Instance.tiles[new Vector2(CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1, CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item2)].transform.GetChild(0).GetComponent<GisPosToPixel>();
-                    _pointInUV = _gisPostToPixel.gisPosToPixelMethodOffline(_mapRef.GeographicToEngine(_gpsPosition));
-                    _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
-                    _shaderImage.updatePositionInTexture(_pointInUV);
+                    //_pointInUV = _gisPostToPixel.gisPosToPixelMethodOffline(_mapRef.GeographicToEngine(_gpsPosition));
+                    //_shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
+                    //_shaderImage.updatePositionInTexture(_pointInUV);
                     //yield return null;
 
                 }
