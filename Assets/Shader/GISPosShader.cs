@@ -1,4 +1,5 @@
 using Esri.GameEngine.Geometry;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,27 +23,42 @@ public class GISPosShader : MonoBehaviour
             }
         }
         maskTexture.Apply();
+        
 
         // Assign the mask texture to the material
         materialInstance.SetTexture("_MaskTex", maskTexture);
         this.GetComponent<Image>().material = materialInstance;
         
-        //Draw the saved pos 
-        if (LocationService.Instance.SavedPos != null)
-        { 
-            foreach (ArcGISPoint point in LocationService.Instance.SavedPos)
-            {
-                if (_gisPosToPixelRef.V0_0GIS.X <= point.X && point.X <= _gisPosToPixelRef.V1_0GIS.X && _gisPosToPixelRef.V0_0GIS.Y <= point.Y && point.Y <= _gisPosToPixelRef.V0_1GIS.Y)
-                {
-                    Vector2 _pointInUV = _gisPosToPixelRef.gisPosToPixelMethod(point);
-                    updatePositionInTexture(_pointInUV);
-                }
-            }
-        }
+
+        StartCoroutine(DrawSavedPos());
 
         // Calculate and set the aspect ratio
         //float aspectRatio = (float)Screen.width / Screen.height;
         //material.SetFloat("_AspectRatio", aspectRatio);
+    }
+
+    private IEnumerator DrawSavedPos()
+    {
+        //Draw the saved pos 
+        if (LocationService.Instance.SavedPos != null)
+        {
+            foreach (ArcGISPoint point in LocationService.Instance.SavedPos)
+            {
+                
+                while(!_gisPosToPixelRef.HasSpatialReference)
+                {
+                    yield return new WaitForEndOfFrame();
+                }
+                
+                if (_gisPosToPixelRef.V0_0GIS.X <= point.X && point.X <= _gisPosToPixelRef.V1_0GIS.X && _gisPosToPixelRef.V0_0GIS.Y <= point.Y && point.Y <= _gisPosToPixelRef.V0_1GIS.Y)
+                {
+                    
+                    Vector2 _pointInUV = _gisPosToPixelRef.gisPosToPixelMethod(point);
+                    updatePositionInTexture(_pointInUV);
+                }
+            }
+            
+        }
     }
 
     void Update()
@@ -76,6 +92,7 @@ public class GISPosShader : MonoBehaviour
 
     public void updatePositionInTexture(Vector2 pointInUV)
     {
+        
         int x = (int)(pointInUV.x * maskTexture.width);
         int y = (int)(pointInUV.y * maskTexture.height);
         int radius = (int)(0.01f * maskTexture.width);
@@ -94,6 +111,7 @@ public class GISPosShader : MonoBehaviour
             }
         }
         maskTexture.Apply();
+        
     }
 
     public void updateLineInTexture(Vector2 pointNew, Vector2 pointOld)

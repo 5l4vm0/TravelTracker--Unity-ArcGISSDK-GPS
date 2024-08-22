@@ -14,6 +14,7 @@ public class GisPosToPixel : MonoBehaviour
     [SerializeField] private GameObject V0_1;
     [SerializeField] private ArcGISPoint v0_1GIS;
     [SerializeField] private Transform _origin;
+    public bool HasSpatialReference;
 
     //properties
     public ArcGISPoint V0_0GIS 
@@ -43,7 +44,7 @@ public class GisPosToPixel : MonoBehaviour
             //Debug.Log("Waiting for ArcGISMapComponent to have a valid spatial reference...");
             yield return null;
         }
-
+        HasSpatialReference = true;
 
         //Convert unity global position to geographic position by mapRef.EngineToGeographic, then project it to coordinate WGS84 so it shows as latitude and longtitude
         v0_0GIS = (ArcGISPoint)ArcGISGeometryEngine.Project(mapRef.EngineToGeographic(new Vector3(transform.position.x - 1500, 0, transform.position.z - 1500)), ArcGISSpatialReference.WGS84());

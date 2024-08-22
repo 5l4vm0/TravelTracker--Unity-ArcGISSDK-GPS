@@ -184,7 +184,7 @@ public class LocationService : MonoBehaviour
             _latitude = UnityEngine.Input.location.lastData.latitude;
             _longitude = UnityEngine.Input.location.lastData.longitude;
             _altitude = UnityEngine.Input.location.lastData.altitude;
-            Debug.Log("get new data");
+            
 
             //Get round up to 5 decimal points
             _gpsPosition = new ArcGISPoint(Mathf.Round(_longitude * 100000f) / 100000f, Mathf.Round(_latitude * 100000f) / 100000f, Mathf.Round(_altitude * 100000f) / 100000f, ArcGISSpatialReference.WGS84());
@@ -227,9 +227,10 @@ public class LocationService : MonoBehaviour
                 _gisPostToPixel = ShaderTextureTilingController.Instance.tiles[new Vector2(CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1, CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item2)].transform.GetChild(0).GetComponent<GisPosToPixel>();
                 _pointInUV = _gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
                 _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
+                
                 _shaderImage.updatePositionInTexture(_pointInUV);
-
-                if(_gpsNotActiveTime < 15f)
+               
+                if (_gpsNotActiveTime < 15f)
                 {
                     //Draw line between _lastPosition and current gps position (Designed for losting gps for short period of time)
                     if (_lastPosition == null)
