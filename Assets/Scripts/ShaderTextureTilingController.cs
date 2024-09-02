@@ -19,13 +19,16 @@ public class ShaderTextureTilingController : MonoBehaviour
     {
         Instance = this;
         BasedRefBottomLeftPos = new Vector3(CameraMovement.Instance.BottomLeft.x, 0, CameraMovement.Instance.BottomLeft.z );
+    }
 
-        for (int x = 0; x < (CameraMovement.Instance.BottomRight.x - CameraMovement.Instance.BottomLeft.x)/3000; x++)
+    public void InitialiseTextureForCameraWhenFirstGetGPS()
+    {
+        for (int x = 0; x < (CameraMovement.Instance.BottomRight.x - CameraMovement.Instance.BottomLeft.x) / 3000; x++)
         {
             for (int y = 0; y < (CameraMovement.Instance.TopLeft.z - CameraMovement.Instance.BottomLeft.z) / 3000; y++)
             {
-                
-                if(!tiles.ContainsKey(new Vector2(x, y)))
+
+                if (!tiles.ContainsKey(new Vector2(x, y)))
                 {
                     AddShaderTexture(x, y);
                 }
