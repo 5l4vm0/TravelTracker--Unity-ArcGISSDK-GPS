@@ -169,50 +169,69 @@ public class LocationService : MonoBehaviour
     }
     private void GetGPS()
     {
-        Debug.Log("here");
-        CheckInternet();
-        //Debug.LogFormat("Location service live. status {0}", UnityEngine.Input.location.status);
-        // Access granted and location value could be retrieved
-        //Debug.LogFormat("Location: "
-        //    + UnityEngine.Input.location.lastData.latitude + " "
-        //    + UnityEngine.Input.location.lastData.longitude + " "
-        //    + UnityEngine.Input.location.lastData.altitude + " "
-        //    + UnityEngine.Input.location.lastData.horizontalAccuracy + " "
-        //    + UnityEngine.Input.location.lastData.timestamp);
-
-        if (_isFirstGettingGPS)
+        if ((_latitude != UnityEngine.Input.location.lastData.latitude || _longitude != UnityEngine.Input.location.lastData.longitude)) //GPS is working
         {
-            ShaderTextureTilingController.Instance.InitialiseTextureForCameraWhenFirstGetGPS();
-            _isFirstGettingGPS = false;
+            testUIGPS.color = Color.green;
+
+            _gpsNotActiveTime = 0;
+
+            Debug.Log("here");
+            CheckInternet();
+            //Debug.LogFormat("Location service live. status {0}", UnityEngine.Input.location.status);
+            // Access granted and location value could be retrieved
+            //Debug.LogFormat("Location: "
+            //    + UnityEngine.Input.location.lastData.latitude + " "
+            //    + UnityEngine.Input.location.lastData.longitude + " "
+            //    + UnityEngine.Input.location.lastData.altitude + " "
+            //    + UnityEngine.Input.location.lastData.horizontalAccuracy + " "
+            //    + UnityEngine.Input.location.lastData.timestamp);
+
+            if (_isFirstGettingGPS)
+            {
+                ShaderTextureTilingController.Instance.InitialiseTextureForCameraWhenFirstGetGPS();
+                _isFirstGettingGPS = false;
+            }
+
+            Debug.Log("here1");
+            _latitude = UnityEngine.Input.location.lastData.latitude;
+            _longitude = UnityEngine.Input.location.lastData.longitude;
+            _altitude = UnityEngine.Input.location.lastData.altitude;
+
+
+            //Get round up to 5 decimal points
+            _gpsPosition = new ArcGISPoint(Mathf.Round(_longitude * 100000f) / 100000f, Mathf.Round(_latitude * 100000f) / 100000f, Mathf.Round(_altitude * 100000f) / 100000f, ArcGISSpatialReference.WGS84());
+            Debug.Log($"gpsPosition: {_gpsPosition.X},{_gpsPosition.Y}");
+
+
+
+            if (CamInCentre)
+            {
+                _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
+            }
+
+            if (!_mapRef.HasSpatialReference())
+            {
+                Debug.Log("no spatial refernece");
+                //_playerDotRef.gameObject.transform.position = new Vector3(_mapRef.GeographicToEngine(_gpsPosition).x, _mapRef.GeographicToEngine(_gpsPosition).y, 0.1f);
+            }
+            else
+            {
+                Debug.Log("here2");
+                _playerDotRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 0.1, _gpsPosition.SpatialReference);
+            }
         }
-
-        Debug.Log("here1");
-        _latitude = UnityEngine.Input.location.lastData.latitude;
-        _longitude = UnityEngine.Input.location.lastData.longitude;
-        _altitude = UnityEngine.Input.location.lastData.altitude;
-            
-
-        //Get round up to 5 decimal points
-        _gpsPosition = new ArcGISPoint(Mathf.Round(_longitude * 100000f) / 100000f, Mathf.Round(_latitude * 100000f) / 100000f, Mathf.Round(_altitude * 100000f) / 100000f, ArcGISSpatialReference.WGS84());
-        Debug.Log($"gpsPosition: {_gpsPosition.X},{_gpsPosition.Y}");
-        
-        
-
-        if (CamInCentre)
+        else  //Lost GPS 
         {
-            _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
+            Debug.Log("hereLosing");
+            _gpsNotActiveTime++;
         }
+        Debug.Log("here7");
+        if (_gpsNotActiveTime > 15f) //Lost GPS for more than 15f
+        {
+            testUIGPS.color = Color.red;
 
-        if (!_mapRef.HasSpatialReference())
-        {
-            Debug.Log("no spatial refernece");
-            //_playerDotRef.gameObject.transform.position = new Vector3(_mapRef.GeographicToEngine(_gpsPosition).x, _mapRef.GeographicToEngine(_gpsPosition).y, 0.1f);
         }
-        else
-        {
-            Debug.Log("here2");
-            _playerDotRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 0.1, _gpsPosition.SpatialReference);
-        }
+        Debug.Log("here8");
 
         //store gpsPosition into _visitedPosList if the gps position has not existed in the list yet
         //In this case, we can have a list to record all gps position data that we have been visited
@@ -253,26 +272,6 @@ public class LocationService : MonoBehaviour
             
         }
 
-        if ((_latitude != UnityEngine.Input.location.lastData.latitude || _longitude != UnityEngine.Input.location.lastData.longitude)) //GPS is working
-        {
-            testUIGPS.color = Color.green;
-            
-            Debug.Log("here3");
-            _gpsNotActiveTime = 0;
-        }
-        else  //Lost GPS 
-        {
-            Debug.Log("hereLosing");
-            _gpsNotActiveTime++;
-        }
-        Debug.Log("here7");
-        if (_gpsNotActiveTime > 15f) //Lost GPS for more than 15f
-        {
-            testUIGPS.color = Color.red;
-            
-        }
-        Debug.Log("here8");
-        
     }
 
     private void CheckInternet()
