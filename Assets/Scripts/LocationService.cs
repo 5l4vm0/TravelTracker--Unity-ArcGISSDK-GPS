@@ -26,6 +26,7 @@ public class LocationService : MonoBehaviour
     public bool CamInCentre = true;
     [SerializeField] private ButtonBehaviour _reCentreButton;
     [SerializeField] private Image testUIGPS;
+    [SerializeField] private Sprite[] _globeImage;
     [SerializeField] private Image testUIWifi;
     private bool isFirstTimeReload = true;
     private bool _isFirstGettingGPS = true;
@@ -123,7 +124,7 @@ public class LocationService : MonoBehaviour
         {
             // TODO Failure
             Debug.LogFormat("Unable to determine device location. Failed with status {0}", UnityEngine.Input.location.status);
-            testUIGPS.color = Color.red;
+            testUIGPS.sprite = _globeImage[0];
 
             //Try to start location service again 
             UnityEngine.Input.location.Stop();
@@ -171,7 +172,7 @@ public class LocationService : MonoBehaviour
     {
         if ((_latitude != UnityEngine.Input.location.lastData.latitude || _longitude != UnityEngine.Input.location.lastData.longitude)) //GPS is working
         {
-            testUIGPS.color = Color.green;
+            testUIGPS.sprite = _globeImage[1];
 
             _gpsNotActiveTime = 0;
 
@@ -228,7 +229,7 @@ public class LocationService : MonoBehaviour
         Debug.Log("here7");
         if (_gpsNotActiveTime > 15f) //Lost GPS for more than 15f
         {
-            testUIGPS.color = Color.red;
+            testUIGPS.sprite = _globeImage[0];
 
         }
         Debug.Log("here8");
