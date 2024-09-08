@@ -217,7 +217,7 @@ public class LocationService : MonoBehaviour
             else
             {
                 Debug.Log("here2");
-                _playerDotRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 0.1, _gpsPosition.SpatialReference);
+                _playerDotRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 26, _gpsPosition.SpatialReference);
             }
         }
         else  //Lost GPS 
