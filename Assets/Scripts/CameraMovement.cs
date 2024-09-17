@@ -20,8 +20,8 @@ public class CameraMovement : MonoBehaviour
     //Singleton
     public static CameraMovement Instance;
 
-    // Start is called before the first frame update
-    void Awake()
+
+    void Start()
     {
         Instance = this;
         updateViewportPoints();
@@ -88,7 +88,7 @@ public class CameraMovement : MonoBehaviour
         ShaderTextureTilingController.Instance.loopThroughViewport(GetCameraCentralTile(_cameraCentre).Item1, GetCameraCentralTile(_cameraCentre).Item2);
     }
 
-    void updateViewportPoints()
+    public void updateViewportPoints()
     {
         BottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
         BottomRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, 0));

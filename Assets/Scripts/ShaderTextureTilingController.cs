@@ -15,10 +15,10 @@ public class ShaderTextureTilingController : MonoBehaviour
     public Vector3 BasedRefBottomLeftPos;
     public Dictionary<Vector2, GameObject> tiles = new Dictionary<Vector2, GameObject>();
 
-    private void Start()
+    private void Awake()
     {
         Instance = this;
-        BasedRefBottomLeftPos = new Vector3(CameraMovement.Instance.BottomLeft.x, 0, CameraMovement.Instance.BottomLeft.z );
+        //BasedRefBottomLeftPos = new Vector3(CameraMovement.Instance.BottomLeft.x, 0, CameraMovement.Instance.BottomLeft.z );
     }
 
     public void InitialiseTextureForCameraWhenFirstGetGPS()
@@ -34,6 +34,7 @@ public class ShaderTextureTilingController : MonoBehaviour
                 }
             }
         }
+        Debug.Log("shaderTexture");
     }
 
     public ValueTuple<int, int> CalculateTileNumber(Vector3 EndPoint)
@@ -51,11 +52,14 @@ public class ShaderTextureTilingController : MonoBehaviour
             newTile.name = $"ShaderTextureTilePrefab [{TileNumberX},{TileNumberY}]";
             newTile.transform.GetChild(0).GetComponent<GISPosShader>().AssignTileNumber(TileNumberX, TileNumberY);
             tiles.Add(new Vector2(TileNumberX, TileNumberY), newTile);
+            Debug.Log("shadertexture here");
             return newTile;
         }
         else
         {
+            Debug.Log("shadertexture here2");
             return tiles[new Vector2(TileNumberX, TileNumberY)];
+            
         }
     }
 

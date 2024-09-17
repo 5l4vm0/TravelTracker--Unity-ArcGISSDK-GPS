@@ -189,11 +189,15 @@ public class LocationService : MonoBehaviour
 
             if (_isFirstGettingGPS)
             {
+                Camera.main.transform.position = new Vector3(_playerDotRef.transform.position.x, 200, _playerDotRef.transform.position.z);
+                CameraMovement.Instance.updateViewportPoints();
+                ShaderTextureTilingController.Instance.BasedRefBottomLeftPos = new Vector3(CameraMovement.Instance.BottomLeft.x, 0, CameraMovement.Instance.BottomLeft.z);
                 ShaderTextureTilingController.Instance.InitialiseTextureForCameraWhenFirstGetGPS();
+                Debug.Log("here1");
                 _isFirstGettingGPS = false;
             }
 
-            Debug.Log("here1");
+            
             _latitude = UnityEngine.Input.location.lastData.latitude;
             _longitude = UnityEngine.Input.location.lastData.longitude;
             _altitude = UnityEngine.Input.location.lastData.altitude;
@@ -252,6 +256,8 @@ public class LocationService : MonoBehaviour
                 //yield return null;
 
             }
+
+            
             _gisPostToPixel = ShaderTextureTilingController.Instance.tiles[new Vector2(CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1, CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item2)].transform.GetChild(0).GetComponent<GisPosToPixel>();
             _pointInUV = _gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
             _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
