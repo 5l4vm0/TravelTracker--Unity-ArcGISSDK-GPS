@@ -31,11 +31,7 @@ public class LocationService : MonoBehaviour
     [SerializeField] private Image testUIWifi;
     private bool isFirstTimeReload = true;
     private bool _isFirstGettingGPS = true;
-    private float _latitude;
-    private float _longitude;
-    private float _altitude;
     private DateTime _lastDataTimestamp;
-    private DateTime _nowTimeStamp;
 
     //Singleton
     public static LocationService Instance;
@@ -43,7 +39,6 @@ public class LocationService : MonoBehaviour
     private void Start()
     {
         Instance = this;
-        _lastDataTimestamp = DateTime.UtcNow;
 
         StartCoroutine(LocationCoroutine());
         _allVisitedPos = new StringBuilder();
@@ -138,7 +133,7 @@ public class LocationService : MonoBehaviour
             CheckInternet();
             if (UnityEngine.Input.location.status == LocationServiceStatus.Running)
             {
-                _nowTimeStamp = DateTime.UtcNow;
+                
                 GetGPS();
             }
             yield return new WaitForSecondsRealtime(3);
@@ -173,13 +168,11 @@ public class LocationService : MonoBehaviour
     }
     private void GetGPS()
     {
-        if ((_latitude != UnityEngine.Input.location.lastData.latitude || _longitude != UnityEngine.Input.location.lastData.longitude)) //GPS is working
+        if ((_gpsPosition.X != UnityEngine.Input.location.lastData.latitude || _gpsPosition.Y != UnityEngine.Input.location.lastData.longitude)) //GPS is working
         {
             testUIGPS.sprite = _globeImage[1];
             
-            _lastDataTimestamp = DateTime.UtcNow;
 
-            CheckInternet();
             //Debug.LogFormat("Location service live. status {0}", UnityEngine.Input.location.status);
             // Access granted and location value could be retrieved
             //Debug.LogFormat("Location: "
@@ -198,14 +191,18 @@ public class LocationService : MonoBehaviour
                 _isFirstGettingGPS = false;
             }
 
-            
-            _latitude = UnityEngine.Input.location.lastData.latitude;
-            _longitude = UnityEngine.Input.location.lastData.longitude;
-            _altitude = UnityEngine.Input.location.lastData.altitude;
-
+            float latitude = UnityEngine.Input.location.lastData.latitude;
+            float longtitude = UnityEngine.Input.location.lastData.longitude;
+            float altitude = UnityEngine.Input.location.lastData.altitude;
 
             //Get round up to 5 decimal points
-            _gpsPosition = new ArcGISPoint(Mathf.Round(_longitude * 100000f) / 100000f, Mathf.Round(_latitude * 100000f) / 100000f, Mathf.Round(_altitude * 100000f) / 100000f, ArcGISSpatialReference.WGS84());
+            _gpsPosition = new ArcGISPoint(
+                Mathf.Round(longtitude * 100000f) / 100000f, 
+                Mathf.Round(latitude * 100000f) / 100000f, 
+                Mathf.Round(altitude * 100000f) / 100000f, 
+                ArcGISSpatialReference.WGS84()
+            );
+
             Debug.Log($"gpsPosition: {_gpsPosition.X},{_gpsPosition.Y}");
 
 
@@ -224,6 +221,25 @@ public class LocationService : MonoBehaviour
             {
                 _playerDotRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 26, _gpsPosition.SpatialReference);
             }
+
+            _gisPostToPixel = ShaderTextureTilingController.Instance.tiles[new Vector2(CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1, CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item2)].transform.GetChild(0).GetComponent<GisPosToPixel>();
+            _pointInUV = _gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
+            _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
+
+            if (_lastPosition != null && _lastDataTimestamp != null && (DateTime.UtcNow - _lastDataTimestamp).TotalSeconds < 15)
+            {
+                if (!_mapRef.HasSpatialReference())
+                {
+                    Debug.Log("Waiting for ArcGISMapComponent to have a valid spatial reference...");
+                    _gisPostToPixel = ShaderTextureTilingController.Instance.tiles[new Vector2(CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1, CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item2)].transform.GetChild(0).GetComponent<GisPosToPixel>();
+                }
+
+                //Draw line between _lastPosition and current gps position (Designed for losing gps for short period of time)
+                _lastPointInUV = _gisPostToPixel.gisPosToPixelMethod(_lastPosition);
+                _shaderImage.updateLineInTexture(_pointInUV, _lastPointInUV);
+            }
+            _lastPosition = _gpsPosition;
+            _lastDataTimestamp = DateTime.UtcNow;
         }
         else  //Lost GPS 
         {
@@ -231,10 +247,9 @@ public class LocationService : MonoBehaviour
             
         }
 
-        if ( (_nowTimeStamp - _lastDataTimestamp).TotalSeconds >= 15 ) //Lost GPS for more than 15f
+        if (_lastDataTimestamp!= null && ((DateTime.UtcNow - _lastDataTimestamp).TotalSeconds >= 15) ) //Lost GPS for more than 15f
         {
             testUIGPS.sprite = _globeImage[0];
-            _lastPosition = null;
             Debug.Log("Time over 15sec");
         }
 
@@ -257,23 +272,10 @@ public class LocationService : MonoBehaviour
 
             }
 
-            
             _gisPostToPixel = ShaderTextureTilingController.Instance.tiles[new Vector2(CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1, CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item2)].transform.GetChild(0).GetComponent<GisPosToPixel>();
             _pointInUV = _gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
             _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
             _shaderImage.updatePositionInTexture(_pointInUV);
-
-            if ((_nowTimeStamp - _lastDataTimestamp).TotalSeconds < 15)
-            {
-                //Draw line between _lastPosition and current gps position (Designed for losing gps for short period of time)
-                if (_lastPosition == null)
-                {
-                    _lastPosition = _gpsPosition;
-                }
-                _lastPointInUV = _gisPostToPixel.gisPosToPixelMethod(_lastPosition);
-                _shaderImage.updateLineInTexture(_pointInUV, _lastPointInUV);
-                _lastPosition = _gpsPosition;
-            }
             
         }
         

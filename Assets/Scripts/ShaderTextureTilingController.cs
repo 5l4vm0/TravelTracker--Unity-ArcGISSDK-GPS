@@ -34,7 +34,6 @@ public class ShaderTextureTilingController : MonoBehaviour
                 }
             }
         }
-        Debug.Log("shaderTexture");
     }
 
     public ValueTuple<int, int> CalculateTileNumber(Vector3 EndPoint)
@@ -52,12 +51,10 @@ public class ShaderTextureTilingController : MonoBehaviour
             newTile.name = $"ShaderTextureTilePrefab [{TileNumberX},{TileNumberY}]";
             newTile.transform.GetChild(0).GetComponent<GISPosShader>().AssignTileNumber(TileNumberX, TileNumberY);
             tiles.Add(new Vector2(TileNumberX, TileNumberY), newTile);
-            Debug.Log("shadertexture here");
             return newTile;
         }
         else
         {
-            Debug.Log("shadertexture here2");
             return tiles[new Vector2(TileNumberX, TileNumberY)];
             
         }
