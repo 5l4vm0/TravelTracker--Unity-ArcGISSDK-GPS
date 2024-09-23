@@ -1965,11 +1965,11 @@ MonoBehaviour:
   _shaderImage: {fileID: 0}
   CamInCentre: 1
   _reCentreButton: {fileID: 2092831801}
-  testUIGPS: {fileID: 576029178}
+  _testUIGPS: {fileID: 576029178}
   _globeImage:
   - {fileID: 21300000, guid: 57c372201ec5ba849aa99e6b40ed2379, type: 3}
   - {fileID: 21300000, guid: a43a66a49415cf047bae944c0c82ac74, type: 3}
-  testUIWifi: {fileID: 1557887928}
+  _testUIWifi: {fileID: 1557887928}
 --- !u!4 &1275409334
 Transform:
   m_ObjectHideFlags: 0
