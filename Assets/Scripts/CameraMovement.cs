@@ -30,32 +30,39 @@ public class CameraMovement : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if((Input.touchCount ==1 && Input.GetTouch(0).phase == TouchPhase.Began))
         {
-            if(EventSystem.current.IsPointerOverGameObject()) //To prevent interact with map when there's UI
+            if((Input.touchCount >0 && EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))) //To prevent interact with map when there's UI
             {
+                Debug.Log($"return{Input.touchCount}, {EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)}");
                 return;
             }
-            _touchStart = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
-
-        if(Input.GetMouseButton(0))
-        {
-            if (EventSystem.current.IsPointerOverGameObject()) 
+            
+            if(Input.touchCount > 0)
             {
-                return;
-            }
-            Vector3 direction = _touchStart - Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Camera.main.transform.position += direction;
-            _locationSeerviceRef.CamInCentre = false;
-        }
-        if(Input.GetMouseButtonUp(0))
-        {
-            if (EventSystem.current.IsPointerOverGameObject())
-            {
-                return;
+                _touchStart = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
             }
             LocationService.Instance.CameraNotInCentreBehaviour();
+        }
+
+        if( (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Moved))
+        {
+            if ((Input.touchCount > 0 && EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))) //To prevent interact with map when there's UI
+            {
+                return;
+            }
+            if (Input.touchCount >0)
+            {
+                Vector3 direction = _touchStart - Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+                Camera.main.transform.position += direction;
+            }
+        }
+        if( (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Ended))
+        {
+            if ((Input.touchCount > 0 && EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))) //To prevent interact with map when there's UI
+            {
+                return;
+            }
             Vector3 _cameraCentre = this.transform.position;
             ShaderTextureTilingController.Instance.loopThroughViewport(GetCameraCentralTile(_cameraCentre).Item1, GetCameraCentralTile(_cameraCentre).Item2);
         }
