@@ -110,7 +110,7 @@ public class LocationService : MonoBehaviour
             SaveLocationsToFile();
         }
 
-        if (UnityEngine.Input.location.status == LocationServiceStatus.Running && (DateTime.UtcNow - _lastCheckGPSTime).TotalSeconds > 3)
+        if (UnityEngine.Input.location.status == LocationServiceStatus.Running && (DateTime.UtcNow - _lastCheckGPSTime).TotalSeconds > 3 && _mapRef.HasSpatialReference())
         {
             GetGPS();
         }
@@ -146,17 +146,7 @@ public class LocationService : MonoBehaviour
         {
             //Set GPS Icon to coloured
             _testUIGPS.sprite = _globeImage[1];
-            
-
-            if (_isFirstGettingGPS)
-            {
-                Camera.main.transform.position = new Vector3(_playerDotRef.transform.position.x, 200, _playerDotRef.transform.position.z);
-                CameraMovement.Instance.updateViewportPoints();
-                ShaderTextureTilingController.Instance.BasedRefBottomLeftPos = new Vector3(CameraMovement.Instance.BottomLeft.x, 0, CameraMovement.Instance.BottomLeft.z);
-                ShaderTextureTilingController.Instance.InitialiseTextureForCameraWhenFirstGetGPS();
-                _isFirstGettingGPS = false;
-            }
-
+           
             float latitude = UnityEngine.Input.location.lastData.latitude;
             float longtitude = UnityEngine.Input.location.lastData.longitude;
             float altitude = UnityEngine.Input.location.lastData.altitude;
@@ -169,24 +159,24 @@ public class LocationService : MonoBehaviour
                 ArcGISSpatialReference.WGS84()
             );
 
-            Debug.Log($"gpsPosition: {_gpsPosition.X},{_gpsPosition.Y}");
-
-
+            //Debug.Log($"gpsPosition: {_gpsPosition.X},{_gpsPosition.Y}");
 
             if (CamInCentre)
             {
                 _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
             }
 
-            if (!_mapRef.HasSpatialReference())
+            
+             _playerDotRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 26, _gpsPosition.SpatialReference);
+            
+
+            if (_isFirstGettingGPS)
             {
-                Debug.Log("no spatial refernece");
-                //TODO: Reinitialise map
-                //_playerDotRef.gameObject.transform.position = new Vector3(_mapRef.GeographicToEngine(_gpsPosition).x, _mapRef.GeographicToEngine(_gpsPosition).y, 0.1f);
-            }
-            else
-            {
-                _playerDotRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 26, _gpsPosition.SpatialReference);
+                _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
+                CameraMovement.Instance.updateViewportPoints();
+                ShaderTextureTilingController.Instance.BasedRefBottomLeftPos = new Vector3(CameraMovement.Instance.BottomLeft.x, 0, CameraMovement.Instance.BottomLeft.z);
+                ShaderTextureTilingController.Instance.InitialiseTextureForCameraWhenFirstGetGPS();
+                _isFirstGettingGPS = false;
             }
 
             Vector2 cameraInTextureTileNumber = new Vector2(
@@ -201,17 +191,18 @@ public class LocationService : MonoBehaviour
 
             if (_lastPosition != null && _lastGotGPSTime != null && (DateTime.UtcNow - _lastGotGPSTime).TotalSeconds < 15)
             {
-                if (!_mapRef.HasSpatialReference())
-                {
-                    Debug.Log("Waiting for ArcGISMapComponent to have a valid spatial reference...");
-                }
-
                 //Draw line between _lastPosition and current gps position (Designed for losing gps for short period of time)
                 _lastPointInUV = _gisPostToPixel.gisPosToPixelMethod(_lastPosition);
                 _shaderImage.updateLineInTexture(_pointInUV, _lastPointInUV);
+                Debug.Log($"less than 15sec: currect new gps position: {_gpsPosition.X}, {_gpsPosition.Y}/last position:{_lastPosition.X},{_lastPosition.Y}");
             }
+            Debug.Log($"Now time: {DateTime.UtcNow}, last got gps time: {_lastGotGPSTime}");
+            if(_lastPosition!=null)
+            Debug.Log($"currect new gps position: {_gpsPosition.X}, {_gpsPosition.Y}/ last position:{_lastPosition.X},{_lastPosition.Y}");
+
             _lastPosition = _gpsPosition;
             _lastGotGPSTime = DateTime.UtcNow;
+
         }
         else  
         {
@@ -231,11 +222,6 @@ public class LocationService : MonoBehaviour
         if (!_visitedPosList.Contains(_gpsPosition, comparer))
         {
             _visitedPosList.Add(_gpsPosition);
-
-            if (!_mapRef.HasSpatialReference())
-            {
-                Debug.Log("Waiting for ArcGISMapComponent to have a valid spatial reference...");
-            }
 
             Vector2 cameraInTextureTileNumber = new Vector2(
                 CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1,
@@ -263,12 +249,12 @@ public class LocationService : MonoBehaviour
         else if (Application.internetReachability != NetworkReachability.NotReachable)
         {
             _testUIWifi.color = Color.green;
-            if (!_mapRef.HasSpatialReference() && _isFirstTimeReload)
-            {
-                Debug.Log("try initialising map");
-                StartCoroutine(ReInitialiseMap());
-                _isFirstTimeReload = false;
-            }
+            //if (!_mapRef.HasSpatialReference() && _isFirstTimeReload)
+            //{
+            //    Debug.Log("try initialising map");
+            //    StartCoroutine(ReInitialiseMap());
+            //    _isFirstTimeReload = false;
+            //}
         }
     }
 
@@ -281,11 +267,14 @@ public class LocationService : MonoBehaviour
         _mapRef.Extent = newExtent;
     }
 
+    //Being called when click on recentre button
     public void CameraMoveBackToPlayerDotCentre()
     {
+        Debug.Log("button pressed");
         _cameraRef.gameObject.transform.position = new Vector3(_playerDotRef.gameObject.transform.position.x, _cameraRef.gameObject.transform.position.y, _playerDotRef.gameObject.transform.position.z);
         _reCentreButton.IconBackToDefault();
         CamInCentre = true;
+        Debug.Log("cam in centre");
     }
 
     public void CameraNotInCentreBehaviour()
