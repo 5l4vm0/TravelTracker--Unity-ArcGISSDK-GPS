@@ -29,7 +29,8 @@ public class LocationService : MonoBehaviour
     [SerializeField] private Sprite[] _globeImage;
     [SerializeField] private Image _testUIWifi;
     private bool _isFirstTimeReload = true;
-    private bool _isFirstGettingGPS = true;
+    private bool _isCameraSetToStartingGPSPos = false;
+    private DateTime _firstGetGPSTime;
     private DateTime _lastGotGPSTime;
     private DateTime _lastLocationSavedTime;
     private DateTime _lastCheckGPSTime;
@@ -166,19 +167,27 @@ public class LocationService : MonoBehaviour
                 _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
             }
 
-            
              _playerDotRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 26, _gpsPosition.SpatialReference);
             
-
-            if (_isFirstGettingGPS)
+            if(_firstGetGPSTime == default)
             {
+                _firstGetGPSTime = DateTime.UtcNow;
+                return;
+            }
+            
+            //Set up Camera position to starting gps position when 0.1f after first getting gps time
+            //In order to give time to Unity cooridinate update with ArcGis gps location for camera and player dot
+            if (!_isCameraSetToStartingGPSPos && (DateTime.UtcNow - _firstGetGPSTime).TotalSeconds > 0.1f)
+            {
+
                 _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
                 CameraMovement.Instance.updateViewportPoints();
                 ShaderTextureTilingController.Instance.BasedRefBottomLeftPos = new Vector3(CameraMovement.Instance.BottomLeft.x, 0, CameraMovement.Instance.BottomLeft.z);
                 ShaderTextureTilingController.Instance.InitialiseTextureForCameraWhenFirstGetGPS();
-                _isFirstGettingGPS = false;
+                _isCameraSetToStartingGPSPos = true;
+                return;
             }
-
+            
             Vector2 cameraInTextureTileNumber = new Vector2(
                 CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item1, 
                 CameraMovement.Instance.GetCameraCentralTile(_mapRef.GeographicToEngine(_cameraRef.Position)).Item2
@@ -188,7 +197,7 @@ public class LocationService : MonoBehaviour
             _gisPostToPixel = ShaderTextureTilingController.Instance.tiles[cameraInTextureTileNumber].transform.GetChild(0).GetComponent<GisPosToPixel>();
             _pointInUV = _gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
             _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
-
+            
             if (_lastPosition != null && _lastGotGPSTime != null && (DateTime.UtcNow - _lastGotGPSTime).TotalSeconds < 15)
             {
                 //Draw line between _lastPosition and current gps position (Designed for losing gps for short period of time)
