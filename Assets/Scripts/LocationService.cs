@@ -30,7 +30,7 @@ public class LocationService : MonoBehaviour
     [SerializeField] private Image _testUIWifi;
     private bool _isFirstTimeReload = true;
     private bool _isCameraSetToStartingGPSPos = false;
-    private DateTime _firstGetGPSTime;
+    private bool _firstGetGPS;
     private DateTime _lastGotGPSTime;
     private DateTime _lastLocationSavedTime;
     private DateTime _lastCheckGPSTime;
@@ -168,18 +168,19 @@ public class LocationService : MonoBehaviour
             }
 
              _playerDotRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 26, _gpsPosition.SpatialReference);
-            
-            if(_firstGetGPSTime == default)
+
+            //Return if it's first time getting gps location
+            //In order to give time to Unity cooridinate update with ArcGis gps location for camera and player dot
+            if (!_firstGetGPS)
             {
-                _firstGetGPSTime = DateTime.UtcNow;
+                _firstGetGPS = true;
                 return;
             }
-            
-            //Set up Camera position to starting gps position when 0.1f after first getting gps time
-            //In order to give time to Unity cooridinate update with ArcGis gps location for camera and player dot
-            if (!_isCameraSetToStartingGPSPos && (DateTime.UtcNow - _firstGetGPSTime).TotalSeconds > 0.1f)
-            {
 
+            
+            if (!_isCameraSetToStartingGPSPos)
+            {
+                
                 _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
                 CameraMovement.Instance.updateViewportPoints();
                 ShaderTextureTilingController.Instance.BasedRefBottomLeftPos = new Vector3(CameraMovement.Instance.BottomLeft.x, 0, CameraMovement.Instance.BottomLeft.z);
@@ -198,17 +199,13 @@ public class LocationService : MonoBehaviour
             _pointInUV = _gisPostToPixel.gisPosToPixelMethod(_gpsPosition);
             _shaderImage = _gisPostToPixel.gameObject.GetComponent<GISPosShader>();
             
-            if (_lastPosition != null && _lastGotGPSTime != null && (DateTime.UtcNow - _lastGotGPSTime).TotalSeconds < 15)
+            if (_lastPosition != null && _lastGotGPSTime != default && (DateTime.UtcNow - _lastGotGPSTime).TotalSeconds < 15)
             {
                 //Draw line between _lastPosition and current gps position (Designed for losing gps for short period of time)
                 _lastPointInUV = _gisPostToPixel.gisPosToPixelMethod(_lastPosition);
                 _shaderImage.updateLineInTexture(_pointInUV, _lastPointInUV);
-                Debug.Log($"less than 15sec: currect new gps position: {_gpsPosition.X}, {_gpsPosition.Y}/last position:{_lastPosition.X},{_lastPosition.Y}");
             }
-            Debug.Log($"Now time: {DateTime.UtcNow}, last got gps time: {_lastGotGPSTime}");
-            if(_lastPosition!=null)
-            Debug.Log($"currect new gps position: {_gpsPosition.X}, {_gpsPosition.Y}/ last position:{_lastPosition.X},{_lastPosition.Y}");
-
+           
             _lastPosition = _gpsPosition;
             _lastGotGPSTime = DateTime.UtcNow;
 
