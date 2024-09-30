@@ -184,7 +184,7 @@ public class LocationService : MonoBehaviour
                 _cameraRef.Position = new ArcGISPoint(_gpsPosition.X, _gpsPosition.Y, 500, _gpsPosition.SpatialReference);
                 CameraMovement.Instance.updateViewportPoints();
                 ShaderTextureTilingController.Instance.BasedRefBottomLeftPos = new Vector3(CameraMovement.Instance.BottomLeft.x, 0, CameraMovement.Instance.BottomLeft.z);
-                ShaderTextureTilingController.Instance.InitialiseTextureForCameraWhenFirstGetGPS();
+                ShaderTextureTilingController.Instance.loopThroughViewport(0, 0);
                 _isCameraSetToStartingGPSPos = true;
                 return;
             }

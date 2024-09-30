@@ -21,20 +21,6 @@ public class ShaderTextureTilingController : MonoBehaviour
         //BasedRefBottomLeftPos = new Vector3(CameraMovement.Instance.BottomLeft.x, 0, CameraMovement.Instance.BottomLeft.z );
     }
 
-    public void InitialiseTextureForCameraWhenFirstGetGPS()
-    {
-        for (int x = 0; x < (CameraMovement.Instance.BottomRight.x - CameraMovement.Instance.BottomLeft.x) / 3000; x++)
-        {
-            for (int y = 0; y < (CameraMovement.Instance.TopLeft.z - CameraMovement.Instance.BottomLeft.z) / 3000; y++)
-            {
-
-                if (!tiles.ContainsKey(new Vector2(x, y)))
-                {
-                    AddShaderTexture(x, y);
-                }
-            }
-        }
-    }
 
     public ValueTuple<int, int> CalculateTileNumber(Vector3 EndPoint)
     {
@@ -45,30 +31,26 @@ public class ShaderTextureTilingController : MonoBehaviour
 
     public GameObject AddShaderTexture(int TileNumberX, int TileNumberY)
     {
-        if (!tiles.ContainsKey(new Vector2(TileNumberX,TileNumberY)))
-        {
-            GameObject newTile = Instantiate(ShaderTextureTilePrefab, new Vector3(BasedRefBottomLeftPos.x + 1500 + 3000 * TileNumberX, 25, BasedRefBottomLeftPos.z + 1500 + 3000 * TileNumberY), new Quaternion(0, 0, 0, 0), this.transform);
-            newTile.name = $"ShaderTextureTilePrefab [{TileNumberX},{TileNumberY}]";
-            newTile.transform.GetChild(0).GetComponent<GISPosShader>().AssignTileNumber(TileNumberX, TileNumberY);
-            tiles.Add(new Vector2(TileNumberX, TileNumberY), newTile);
-            return newTile;
-        }
-        else
-        {
-            return tiles[new Vector2(TileNumberX, TileNumberY)];
-            
-        }
+
+        GameObject newTile = Instantiate(ShaderTextureTilePrefab, new Vector3(BasedRefBottomLeftPos.x + 1500 + 3000 * TileNumberX, 25, BasedRefBottomLeftPos.z + 1500 + 3000 * TileNumberY), new Quaternion(0, 0, 0, 0), this.transform);
+        newTile.name = $"ShaderTextureTilePrefab [{TileNumberX},{TileNumberY}]";
+        newTile.transform.GetChild(0).GetComponent<GISPosShader>().AssignTileNumber(TileNumberX, TileNumberY);
+        tiles.Add(new Vector2(TileNumberX, TileNumberY), newTile);
+        return newTile;
     }
 
     public void loopThroughViewport(int CentreTileNumberX, int CentreTileNumberY)
     {
         
         //Get centre tile number and use BottomRight - BottomLeft/3000 to know how many tiles are visble, divide into 2 so we know how many for each side(left and right), final +1 is for forloop to loop through 
-        for (int x = CentreTileNumberX - Mathf.RoundToInt((CameraMovement.Instance.BottomRight.x - CameraMovement.Instance.BottomLeft.x) / 3000 / 2); x <CentreTileNumberX+ Mathf.RoundToInt((CameraMovement.Instance.BottomRight.x - CameraMovement.Instance.BottomLeft.x) / 3000 / 2)+1; x++)
+        for (int x = CentreTileNumberX - Mathf.CeilToInt((CameraMovement.Instance.BottomRight.x - CameraMovement.Instance.BottomLeft.x) / 3000 / 2); x <CentreTileNumberX+ Mathf.CeilToInt((CameraMovement.Instance.BottomRight.x - CameraMovement.Instance.BottomLeft.x) / 3000 / 2)+1; x++)
         {
-            for (int y = CentreTileNumberY - Mathf.RoundToInt((CameraMovement.Instance.TopLeft.z - CameraMovement.Instance.BottomLeft.z) / 3000 / 2); y < CentreTileNumberY + Mathf.RoundToInt((CameraMovement.Instance.TopLeft.z - CameraMovement.Instance.BottomLeft.z) / 3000 / 2)+1; y++)
+            for (int y = CentreTileNumberY - Mathf.CeilToInt((CameraMovement.Instance.TopLeft.z - CameraMovement.Instance.BottomLeft.z) / 3000 / 2); y < CentreTileNumberY + Mathf.CeilToInt((CameraMovement.Instance.TopLeft.z - CameraMovement.Instance.BottomLeft.z) / 3000 / 2)+1; y++)
             {
-                AddShaderTexture(x, y);
+                if (!tiles.ContainsKey(new Vector2(x, y)))
+                {
+                    AddShaderTexture(x, y);
+                }
             }
         }
     }
